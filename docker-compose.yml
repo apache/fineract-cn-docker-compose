@@ -58,7 +58,7 @@ services:
     networks:
       - external_tools_default
 
-# HAS ERRORS:
+# TODO HAS ERRORS:
 #  rhythm-ms:
 #    image: apache/fineract-cn-rhythm:latest
 #    environment:
@@ -117,7 +117,7 @@ services:
     networks:
       - external_tools_default
 
-  ledger-ms:
+  accounting-ms:
     ports:
       - "2025:2025"
     image: apache/fineract-cn-accounting:latest
@@ -205,6 +205,9 @@ services:
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
       - external_tools_default
+#
+# TODO add checques-ms
+#
 
   payroll-ms:
     image: apache/fineract-cn-payroll:latest
@@ -221,6 +224,16 @@ services:
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+#
+# TODO group-ms
+#
+
+  fims-web-app:
+    image: aasaru/fineract-cn-fims-web-app:latest # TODO switch to apache repo
+    ports:
+      - "8888:8888"
     networks:
       - external_tools_default
 
