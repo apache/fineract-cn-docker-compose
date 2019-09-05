@@ -11,14 +11,14 @@ This project contains Docker Compose Scripts for running Fineract CN especially 
 `java -cp external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar  org.apache.fineract.cn.lang.security.RsaKeyPairFactory UNIX > .env`
 
 This library is taken from [fineract-cn-lang](https://github.com/apache/fineract-cn-lang#generate-and-print-rsa-keys).
-If needed you can pull a fresh copy of it:
 
-`wget https://mifos.jfrog.io/mifos/libs-snapshot-local/org/apache/fineract/cn/lang/0.1.0-BUILD-SNAPSHOT/lang-0.1.0-BUILD-SNAPSHOT.jar lang-0.1.0-BUILD-SNAPSHOT.jar`
+If needed you can pull a fresh copy of it:
+`wget https://mifos.jfrog.io/mifos/libs-snapshot-local/org/apache/fineract/cn/lang/0.1.0-BUILD-SNAPSHOT/lang-0.1.0-BUILD-SNAPSHOT.jar external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar`
 
 ### Add other environment variables to the end of the .env file
 `cat env_variables >> .env`
 
-If you run some service from localhost then you need to change the host parameter to 'localhost' of that service in .env file.
+If you run some service from localhost then [add these services to your hosts file](#use-the-postman-scripts-when-running-locally).
 
 ## Procedure
 
@@ -28,27 +28,26 @@ cd external-tools
 docker-compose up
 ```
 
-### Choose the services you want to run
-In the docker-compose.yml (that resides in project root) there are more than 10 services defined.
-Running all services together consumes a lot of memory.
-
-
 ### Start micro services
 First only start provisioner-ms by running following in project root:
 
 ```
 docker-compose up provisioner-ms 
 ```
+after it has started (and created table seshat to postgres) stop it.
+This is just to make sure provisioner gets to create the database the other services require.
 
-after it has started (and created table seshat to postgres) stop it and start a subset of services.
+### Choose the services you want to run
+In the docker-compose.yml (that resides in project root) there are more than 10 services defined.
+Running all services together consumes a lot of memory. So you can start a subset of services.
 
-For example you could start the following micro services and an fims-web-app
-
+For example you could start the following micro services and an fims-web-app:
 ```
 docker-compose up provisioner-ms identity-ms office-ms customer-ms accounting-ms fims-web-app
 ```
-If you want you can add other micro services (listed in docker-compose.yml) to the list, for example
- you could also add deposit-account-management-ms
+
+If you want you can add other micro services (listed in docker-compose.yml) to the list.
+For example you could also start `deposit-account-management-ms`
 
 # Provision
 
@@ -68,7 +67,6 @@ Initialize Postman as follows:
 3. Open the collection by clicking on it.
 4. Select the environment "Fineract-Cn-Initial-Setup-Environment" in the environment drop-down (top right corner in Postman).
 5. Execute the requests one by one by selecting them in the collection and then pressing "Send".
-
 
 The first request will retrieve a token. The response should look like this, with a different token:
 
@@ -154,3 +152,9 @@ docker-compose up
 
 There are some scripts in [https://github.com/openMF/fineract-cn-containers](https://github.com/openMF/fineract-cn-containers)
 that have been developed in the past for this purpose.
+
+## References
+
+Derived from [https://github.com/vishwasbabu/ProvisioningFineractCN](https://github.com/vishwasbabu/ProvisioningFineractCN) ,
+[https://github.com/apache/fineract-cn-demo-server](https://github.com/apache/fineract-cn-demo-server)
+and [https://github.com/senacor/BankingInTheCloud-Fineract](https://github.com/apache/fineract-cn-demo-server).
