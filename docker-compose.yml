@@ -1,0 +1,230 @@
+version: '3'
+services:
+  provisioner-ms:
+    image: apache/fineract-cn-provisioner:latest
+    ports:
+      - "2020:2020"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      custom.postgresql.host: ${POSTGRESQL_HOST}
+      custom.postgresql.user: ${POSTGRESQL_USER}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.initialclientid: ${SYSTEM_INITIAL_CLIENT_ID}
+      system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
+      system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+    networks:
+      - external_tools_default
+
+  identity-ms:
+    image: apache/fineract-cn-identity:0.0.1-M.1 # TODO replace with latest
+    ports:
+      - "2021:2021"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
+      cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+    networks:
+      - external_tools_default
+
+# HAS ERRORS:
+#  rhythm-ms:
+#    image: apache/fineract-cn-rhythm:latest
+#    environment:
+#      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+#      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+#      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+#      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+#      postgresql.host: ${POSTGRESQL_HOST}
+#      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+#      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+#      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+#      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#    networks:
+#      - external_tools_default
+
+
+  office-ms:
+    image: apache/fineract-cn-office:latest
+    ports:
+      - "2023:2023"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+      system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
+      system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
+    networks:
+      - external_tools_default
+
+  customer-ms:
+    image: apache/fineract-cn-customer:latest
+    ports:
+      - "2024:2024"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  ledger-ms:
+    ports:
+      - "2025:2025"
+    image: apache/fineract-cn-accounting:latest
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  portfolio-ms:
+    image: apache/fineract-cn-portfolio:latest
+    ports:
+      - "2026:2026"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  deposit-account-management-ms:
+    image: apache/fineract-cn-deposit-account-management:latest
+    ports:
+      - "2027:2027"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  teller-ms:
+    image: apache/fineract-cn-teller:latest
+    ports:
+      - "2028:2028"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  reporting-ms:
+    image: apache/fineract-cn-reporting:latest
+    ports:
+      - "2029:2029"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+  payroll-ms:
+    image: apache/fineract-cn-payroll:latest
+    ports:
+      - "2031:2031"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      - external_tools_default
+
+networks:
+  external_tools_default:
+    external:
+      name: external_tools_default

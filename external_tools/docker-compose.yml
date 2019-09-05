@@ -1,0 +1,71 @@
+version: "3"
+services:
+  activemq:
+    image: rmohr/activemq:5.14.5
+    container_name: activemq
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      ACTIVEMQ_CONFIG_MINMEMORY: 512
+      ACTIVEMQ_CONFIG_MAXMEMORY: 1024
+    healthcheck:
+      test: curl -u admin:admin -s http://localhost:8161/admin || exit 1
+      interval: 1m
+      retries: 5
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+
+  eureka:
+    image: anh3h/eureka-server:latest
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: curl -f http://localhost:8761 || exit 1
+      interval: 1m
+      retries: 5
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+
+  postgres:
+    image: postgres:11
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    healthcheck:
+      test: cqlsh ping -h localhost
+      interval: 1m
+      retries: 5
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 3
+    volumes:
+      - cassandra-volume:/var/lib/cassandra
+
+volumes:
+  cassandra-volume:
+  postgres-volume:
+
