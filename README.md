@@ -1,11 +1,14 @@
 # Fineract CN Docker-Compose scripts
-This project contains Docker Compose Scripts for running Fineract CN especially in Development.	
+This project contains Docker Compose Scripts for running Fineract CN especially in Development.
 
 ## Requirements
 - Docker
 - Docker-compose
 
 ## Perquisites
+
+### Start-up Fineract CN microservices using bash script
+ `bash start-up.sh`
 
 ### Generate .env file with RSA keys
 `java -cp external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar  org.apache.fineract.cn.lang.security.RsaKeyPairFactory UNIX > .env`

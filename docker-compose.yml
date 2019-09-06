@@ -30,7 +30,8 @@ services:
         delay: 10s
         max_attempts: 3
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.6
 
   identity-ms:
     image: apache/fineract-cn-identity:0.0.1-M.1 # TODO replace with latest
@@ -56,7 +57,8 @@ services:
         delay: 10s
         max_attempts: 3
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.7
 
 # HAS ERRORS:
 #  rhythm-ms:
@@ -76,7 +78,8 @@ services:
 #      restart_policy:
 #        condition: on-failure
 #    networks:
-#      - external_tools_default
+#        external_tools_default:
+#          ipv4_address: 172.16.238.8
 
 
   office-ms:
@@ -97,7 +100,8 @@ services:
       system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
       system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.9
 
   customer-ms:
     image: apache/fineract-cn-customer:latest
@@ -115,7 +119,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.10
 
   ledger-ms:
     ports:
@@ -133,7 +138,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.11
 
   portfolio-ms:
     image: apache/fineract-cn-portfolio:latest
@@ -150,7 +156,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.12
 
   deposit-account-management-ms:
     image: apache/fineract-cn-deposit-account-management:latest
@@ -168,7 +175,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.13
 
   teller-ms:
     image: apache/fineract-cn-teller:latest
@@ -186,7 +194,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.14
 
   reporting-ms:
     image: apache/fineract-cn-reporting:latest
@@ -204,7 +213,8 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.15
 
   payroll-ms:
     image: apache/fineract-cn-payroll:latest
@@ -222,7 +232,48 @@ services:
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
-      - external_tools_default
+      external_tools_default:
+        ipv4_address: 172.16.238.16
+
+  group-ms:
+    image: apache/fineract-cn-group:latest
+    ports:
+      - "2032:2032"
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    networks:
+      external_tools_default:
+        ipv4_address: 172.16.238.17
+
+  # Docker image is not yet available
+  # notification-ms:
+  #     image: apache/fineract-cn-notification:latest
+  #     ports:
+  #       - "2033:2033"
+  #     environment:
+  #       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+  #       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+  #       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+  #       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+  #       postgresql.host: ${POSTGRESQL_HOST}
+  #       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+  #       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+  #       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+  #       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+  #       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+  #     networks:
+  #       external_tools_default:
+  #         ipv4_address: 172.16.238.18
+
 
 networks:
   external_tools_default:
