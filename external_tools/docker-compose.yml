@@ -69,3 +69,9 @@ volumes:
   cassandra-volume:
   postgres-volume:
 
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.64/29

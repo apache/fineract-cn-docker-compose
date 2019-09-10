@@ -1,9 +1,14 @@
 # Fineract CN Docker-Compose scripts
-This project contains Docker Compose Scripts for running Fineract CN especially in Development.	
+This project contains Docker Compose Scripts for running Fineract CN especially in Development.
 
 ## Requirements
 - Docker
 - Docker-compose
+
+## Automatic or manual provisioning
+
+You can either try to provision automatically using bash script `bash start-up.sh`
+Or you could achieve the same state by manually following the instructions below:
 
 ## Perquisites
 
