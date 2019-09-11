@@ -163,6 +163,7 @@ services:
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
       external_tools_default:
+      fineract:
         ipv4_address: ${PORTFOLIO_IP}
 
   deposit-account-management-ms:
