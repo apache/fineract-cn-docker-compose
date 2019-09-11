@@ -285,8 +285,8 @@ services:
       fineract:
         ipv4_address: ${GROUP_IP}
 
-  notification-ms:
-    image: apache/fineract-cn-notification:latest
+  notifications-ms:
+    image: aasaru/fineract-cn-notifications:latest # TODO switch to apache repo
     ports:
      - "2033:2033"
     environment:
@@ -302,7 +302,8 @@ services:
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     networks:
       external_tools_default:
-        ipv4_address: ${NOTIFICATION_IP}
+      fineract:
+        ipv4_address: ${NOTIFICATIONS_IP}
 
   fims-web-app:
     image: aasaru/fineract-cn-fims-web-app:latest # TODO switch to apache repo
