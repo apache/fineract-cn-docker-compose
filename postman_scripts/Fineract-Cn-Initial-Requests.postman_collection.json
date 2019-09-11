@@ -86,7 +86,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"identifier\": \"{{tenantIdentifier}}\",\n\t\"name\": \"Playground\",\n\t\"description\": \"Sample tenant for demonstrating Fineract-CN functionality\",\n\t\"cassandraConnectionInfo\": {\n\t\t\"clusterName\": \"Datacenter1\",\n\t\t\"contactPoints\": \"127.0.0.1:9042\",\n\t\t\"keyspace\": \"playground\",\n\t\t\"replicationType\": \"Simple\",\n\t\t\"replicas\": \"1\"\n\t},\n\t\"databaseConnectionInfo\": {\n\t\t\"driverClass\": \"org.mariadb.jdbc.Driver\",\n\t\t\"databaseName\": \"playground\",\n\t\t\"host\": \"localhost\",\n\t\t\"port\": \"3306\",\n\t\t\"user\": \"root\",\n\t\t\"password\": \"mysql\"\n\t}\n}"
+					"raw": "{\n\t\"identifier\": \"{{tenantIdentifier}}\",\n\t\"name\": \"Playground\",\n\t\"description\": \"Sample tenant for demonstrating Fineract-CN functionality\",\n\t\"cassandraConnectionInfo\": {\n\t\t\"clusterName\": \"Datacenter1\",\n\t\t\"contactPoints\": \"cassandra:9042\",\n\t\t\"keyspace\": \"playground\",\n\t\t\"replicationType\": \"Simple\",\n\t\t\"replicas\": \"1\"\n\t},\n\t\"databaseConnectionInfo\": {\n\t\t\"driverClass\": \"org.postgresql.Driver\",\n\t\t\"databaseName\": \"playground\",\n\t\t\"host\": \"postgres\",\n\t\t\"port\": \"5432\",\n\t\t\"user\": \"postgres\",\n\t\t\"password\": \"postgres\"\n\t}\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants",
@@ -129,7 +129,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"identity-v1\",\n\t\"description\": \"Identity Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://localhost:2021/identity/v1\"\n}"
+					"raw": "{\n\t\"name\": \"identity-v1\",\n\t\"description\": \"Identity Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://identity-ms:2021/identity/v1\"\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
@@ -461,7 +461,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"office-v1\",\n\t\"description\": \"Office Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://localhost:2023/office/v1\"\n}"
+					"raw": "{\n\t\"name\": \"office-v1\",\n\t\"description\": \"Office Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://office-ms:2023/office/v1\"\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
@@ -545,7 +545,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"customer-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://localhost:2024/customer/v1\"\n}"
+					"raw": "{\n\t\"name\": \"customer-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://customer-ms:2024/customer/v1\"\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
@@ -629,7 +629,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"accounting-v1\",\n\t\"description\": \"Accounting Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://localhost:2025/accounting/v1\"\n}"
+					"raw": "{\n\t\"name\": \"accounting-v1\",\n\t\"description\": \"Accounting Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://accounting-ms:2025/accounting/v1\"\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",
@@ -713,7 +713,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"deposit-v1\",\n\t\"description\": \"Deposit Management Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://localhost:2026/deposit/v1\"\n}"
+					"raw": "{\n\t\"name\": \"deposit-v1\",\n\t\"description\": \"Deposit Management Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://deposit-account-management-ms:2027/deposit/v1\"\n}"
 				},
 				"url": {
 					"raw": "http://{{provisionerUrl}}/provisioner/v1/applications",

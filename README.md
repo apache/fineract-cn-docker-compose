@@ -123,19 +123,24 @@ Postman scripts use service names (postgres, provisioner-ms, etc) when refering 
 If you want to use the same Postman scripts when running micro services locally then add into your hosts (/etc/hosts in Unix) file:
 
 ```
+127.0.0.1 postgres
+127.0.0.1 cassandra
 127.0.0.1 provisioner-ms
 127.0.0.1 identity-ms
+127.0.0.1 rhythm-ms
 127.0.0.1 office-ms
 127.0.0.1 customer-ms
-127.0.0.1 portfolio-ms
 127.0.0.1 accounting-ms
+127.0.0.1 portfolio-ms
 127.0.0.1 deposit-account-management-ms
 127.0.0.1 teller-ms
 127.0.0.1 reporting-ms
 127.0.0.1 cheques-ms
 127.0.0.1 payroll-ms
 127.0.0.1 group-ms
-127.0.0.1 postgres
+127.0.0.1 notifications-ms
+127.0.0.1 fims-web-app
+
 ```
 
 ### How to reset everything and start from scratch
