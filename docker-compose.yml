@@ -35,7 +35,7 @@ services:
         ipv4_address: ${PROVISIONER_IP}
 
   identity-ms:
-    image: apache/fineract-cn-identity:0.0.1-M.1 # TODO replace with latest
+    image: apache/fineract-cn-identity:latest
     ports:
       - "2021:2021"
     environment:
@@ -62,28 +62,27 @@ services:
       fineract:
         ipv4_address: ${IDENTITY_IP}
 
-  # TODO HAS ERRORS:
-#  rhythm-ms:
-#    image: apache/fineract-cn-rhythm:latest
-#    environment:
-#      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
-#      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
-#      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
-#      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
-#      postgresql.host: ${POSTGRESQL_HOST}
-#      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
-#      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
-#      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
-#      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-#    deploy:
-#      replicas: 1
-#      restart_policy:
-#        condition: on-failure
-#    networks:
-#      external_tools_default:
-#      fineract:
-#          ipv4_address: ${RHYTHM_IP}
-
+  # TODO this image has error: https://issues.apache.org/jira/browse/FINCN-177
+  rhythm-ms:
+    image: apache/fineract-cn-rhythm:latest
+    environment:
+      activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
+      eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+      eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      postgresql.host: ${POSTGRESQL_HOST}
+      ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
+      system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
+      system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      external_tools_default:
+      fineract:
+          ipv4_address: ${RHYTHM_IP}
 
   office-ms:
     image: apache/fineract-cn-office:latest
@@ -227,7 +226,7 @@ services:
         ipv4_address: ${REPORTING_IP}
 
   cheques-ms:
-    image: apache/fineract-cn-reporting:latest
+    image: apache/fineract-cn-cheques:latest
     ports:
       - "2030:2030"
     environment:
@@ -287,7 +286,7 @@ services:
         ipv4_address: ${GROUP_IP}
 
   notifications-ms:
-    image: aasaru/fineract-cn-notifications:latest # TODO switch to apache repo
+    image: apache/fineract-cn-notifications:latest
     ports:
      - "2033:2033"
     environment:
@@ -307,7 +306,7 @@ services:
         ipv4_address: ${NOTIFICATIONS_IP}
 
   fims-web-app:
-    image: aasaru/fineract-cn-fims-web-app:latest # TODO switch to apache repo
+    image: apache/fineract-cn-fims-web-app:latest
     ports:
       - "8888:8888"
     networks:
