@@ -306,8 +306,7 @@ services:
         ipv4_address: ${NOTIFICATIONS_IP}
 
   fims-web-app:
-    #image: apache/fineract-cn-fims-web-app:latest # uncomment after https://github.com/apache/fineract-cn-fims-web-app/pull/20 has been merged
-    image: aasaru/fineract-cn-fims-web-app:latest # temporary
+    image: apache/fineract-cn-fims-web-app:latest
     ports:
       - "8888:8888"
     networks:
