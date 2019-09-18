@@ -157,6 +157,7 @@ services:
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
