@@ -65,6 +65,8 @@ services:
   # TODO this image has error: https://issues.apache.org/jira/browse/FINCN-177
   rhythm-ms:
     image: apache/fineract-cn-rhythm:latest
+    ports:
+      - "2022:2022"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
@@ -75,6 +77,7 @@ services:
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
+      rhythm.beatCheckRate: 600000
     deploy:
       replicas: 1
       restart_policy:
@@ -155,8 +158,11 @@ services:
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      custom.postgresql.host: ${POSTGRESQL_HOST}
+      custom.postgresql.user: ${POSTGRESQL_USER}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
@@ -165,7 +171,7 @@ services:
       fineract:
         ipv4_address: ${PORTFOLIO_IP}
 
-  deposit-account-management-ms:
+  deposit-ms:
     image: apache/fineract-cn-deposit-account-management:latest
     ports:
       - "2027:2027"
@@ -313,7 +319,6 @@ services:
       external_tools_default:
       fineract:
         ipv4_address: ${FIMS_WEB_APP_IP}
-
 
 networks:
   external_tools_default:
