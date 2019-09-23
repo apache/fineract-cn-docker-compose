@@ -1,0 +1,85 @@
+parentIdentifier,identifier,name,type
+1100,1101,"Interest on Business Loans",REVENUE
+1100,1102,"Interest on Agriculture Loans",REVENUE
+1100,1103,"Interest on Consumer Loans",REVENUE
+1100,1104,"Interest on Savings Secured",REVENUE
+1100,1105,"Interest on Other Member Loans",REVENUE
+1100,1120,"Interest on Lines of Credit",REVENUE
+1100,1121,"Interest on Credit Cards",REVENUE
+1100,1140,"Interest on Real Estate Loans",REVENUE
+1100,1190,"Interest Refunds",REVENUE
+1200,1210,"Income from Government Investments",REVENUE
+1200,1220,"Income from Govenment Agency Securities",REVENUE
+1200,1230,"Income from Savings/Deposits/Certificates",REVENUE
+1200,1290,"Income from Other Investments",REVENUE
+1300,1310,"Loan Origination Fees",REVENUE
+1300,1311,"Loan Late Payment Fee",REVENUE
+1300,1312,"Processing Fee",REVENUE
+1300,1313,"Disbursement Fee",REVENUE
+1300,1320,"Loan Refinance Fee",REVENUE
+1300,1390,"Other Loan Fee",REVENUE
+2800,2820,"Collection Expenses",EXPENSE
+2800,2830,"Recording Fees—Chattel Lien Insurance",EXPENSE
+2800,2840,"Credit Reports",EXPENSE
+2800,2850,"Refunds—Real Estate Service Charges",EXPENSE
+2800,2860,"Credit Card Program Expenses",EXPENSE
+2800,2870,"Service Fees on Loans Purchased",EXPENSE
+2800,2890,"Other Loan Servicing Expenses",EXPENSE
+3000,3010,"Provision for Loan Losses—Consumer Loans",EXPENSE
+3000,3020,"Provision for Loan Losses—Lines of Credit",EXPENSE
+3000,3030,"Provision for Loan Losses—Real Estate Loans",EXPENSE
+3000,3040,"Provision for Loan Losses—Other Loans",EXPENSE
+3000,3090,"Other Provision for Losses",EXPENSE
+3100,3110,"Saving Insurance",EXPENSE
+3100,3120,"Life Savings Insurance",EXPENSE
+3100,3130,"Borrowers' Insurance",EXPENSE
+3100,3190,"Other Members' Insurance",EXPENSE
+3800,3801,"Share Dividend",EXPENSE
+3800,3810,"Regular Saving Interest",EXPENSE
+3800,3820,"Checking Interest",EXPENSE
+3800,3830,"Club Account Interest",EXPENSE
+3800,3840,"Saving Certificate Interest",EXPENSE
+3800,3890,"Other Interest Expense",EXPENSE
+7000,7011,"Commercial Loans",ASSET
+7000,7012,"Agriculture Loans",ASSET
+7000,7013,"Consumer Loans",ASSET
+7000,7014,"Other Member Loans",ASSET
+7000,7015,"Home Equity Loans",ASSET
+7000,7021,"Lines of Credit to Members—Credit Cards",ASSET
+7000,7022,"Lines of Credit—Cash Advances in Process",ASSET
+7000,7023,"Net Origination Fees (Costs)—Lines of Credit",ASSET
+7000,7024,"Net Commitment Fees (Costs)—Lines of Credit",ASSET
+7000,7031,"Net Origination Fees (Costs)",ASSET
+7000,7070,"Loans—Collateral in Process of Liquidation",ASSET
+7310,7310.1,"Bank account one general",ASSET
+7310,7310.2,"Bank account one Pending Disbursal",ASSET
+7310,7311.1,"Bank account two general",ASSET
+7310,7311.2,"Bank account two Pending Disbursal",ASSET
+7300,7312,"Petty Cash",ASSET
+7300,7351,"Vault Cash",ASSET
+7300,7352,"Teller One",ASSET
+7300,7353,"Teller Two",ASSET
+7300,7354,"Teller Three",ASSET
+7800,7810,"Accrued Interest on Loans",ASSET
+7800,7820,"Accrued Income on Investments",ASSET
+7800,7830,"Accrued Credit Card Income",ASSET
+7800,7840,"Accrued Late Fee Income",ASSET
+7800,7890,"Other Accrued Income",ASSET
+8200,8201,"Dividends Payable on Shares",LIABILITY
+8200,8202,"Interest Payable on Savings",LIABILITY
+8200,8203,"Interest Payable on Club Accounts",LIABILITY
+8200,8207,"Interest Payable on Other Accounts",LIABILITY
+8400,8410,"VAT Taxes payable",LIABILITY
+8400,8420,"Withholding taxes payable",LIABILITY
+8400,8490,"Other Taxes Payable",LIABILITY
+8500,8530,"Loans Payable",LIABILITY
+8500,8540,"Accrued Dividends Payable",LIABILITY
+8500,8550,"Accrued Interest Payable",LIABILITY
+8500,8590,"Other Accrued Expenses",LIABILITY
+9000,9010,"Share Account",EQUITY
+9000,9020,"Savings",EQUITY
+9000,9030,"Club Accounts",EQUITY
+9000,9040,"Other Savings",EQUITY
+9300,9310,"Regular Reserves",EQUITY
+9300,9320,"Special Reserve for Losses",EQUITY
+9300,9330,"Other Reserves",EQUITY

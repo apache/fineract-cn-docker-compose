@@ -39,20 +39,20 @@ First only start provisioner-ms by running following in project root:
 ```
 docker-compose up provisioner-ms 
 ```
-after it has started (and created table seshat to postgres) stop it.
+after it has started (and created table seshat to Postgre database) you can start rest of the services.
 This is just to make sure provisioner gets to create the database the other services require.
 
 ### Choose the services you want to run
 In the docker-compose.yml (that resides in project root) there are more than 10 services defined.
 Running all services together consumes a lot of memory. So you can start a subset of services.
 
-For example you could start the following micro services and an fims-web-app:
+For example you could start the following additional micro services and an fims-web-app:
 ```
-docker-compose up provisioner-ms identity-ms office-ms customer-ms accounting-ms fims-web-app
+docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms fims-web-app
 ```
 
 If you want you can add other micro services (listed in docker-compose.yml) to the list.
-For example you could also start `deposit-account-management-ms`
+
 
 # Provision
 
@@ -83,12 +83,11 @@ The first request will retrieve a token. The response should look like this, wit
 ```
 
 If you don't get a token there is something wrong with your setup. The token is necessary for authentication in other requests thus be sure that this steps works.
+Important: Be sure to execute the requests in the right order! 
+The outcome is often stored in variables - check the Tests section of the requests.
 
-Important: Be sure to execute the requests in the right order! If you execute the requests that gives you the initial password (request "03.2 Create Identity Service for Tenant") twice you will not be able to retrieve the initial password again (due to the implementation of the identity service).
-If that happens the variable antonyUserPassword is empty (undefined) and you will not be able to sign in antony and change his password (03.3, 03.4).
-
-6. If you didn't start the micro service deposit-account-management-ms with docker-compose then
-you can assign deposits app to tenant (in step 07.1 and 07.2) but these services won't work.
+Use the Postman Runner to import accounts in step 08.1.
+Use the accounts_with_type.csv file found in postman_scripts and [follow the instructions](https://learning.getpostman.com/docs/postman/collection_runs/working_with_data_files/).
 
 
 #### Debugging help
@@ -132,7 +131,7 @@ If you want to use the same Postman scripts when running micro services locally 
 127.0.0.1 customer-ms
 127.0.0.1 accounting-ms
 127.0.0.1 portfolio-ms
-127.0.0.1 deposit-account-management-ms
+127.0.0.1 deposit-ms
 127.0.0.1 teller-ms
 127.0.0.1 reporting-ms
 127.0.0.1 cheques-ms
