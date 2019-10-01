@@ -5,10 +5,25 @@ This project contains Docker Compose Scripts for running Fineract CN especially 
 - Docker
 - Docker-compose
 
-## Automatic or manual provisioning
+## Deploy and provision Fineract CN
 
-You can either try to provision automatically using bash script `bash start-up.sh`
-Or you could achieve the same state by manually following the instructions below:
+You can either deploy and provision Fineract CN automatically using bash scripts or manually using postman.
+
+## 1. Deploy Fineract automtically using bash scripts
+
+ - To start up all the Fineract CN services run:
+
+    `bash start-up.sh`
+ - Then log the last Fineract CN microservice deployed by docker compose (fineract-cn-notification) to make sure all your Fineract services are now available.
+
+    `docker logs -f fineract-cn-docker-compose_notifications-ms_1`
+ - Finally provison the microservices by
+
+    `cd bash_scripts`
+
+    `bash provision.sh playground` #where playground is your tenant name
+
+## 2. Deploy Fineract manually using postman
 
 ## Perquisites
 
@@ -37,7 +52,7 @@ docker-compose up
 First only start provisioner-ms by running following in project root:
 
 ```
-docker-compose up provisioner-ms 
+docker-compose up provisioner-ms
 ```
 after it has started (and created table seshat to Postgre database) you can start rest of the services.
 This is just to make sure provisioner gets to create the database the other services require.
