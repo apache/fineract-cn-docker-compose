@@ -70,6 +70,9 @@ docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms por
 
 If you want you can add other micro services (listed in docker-compose.yml) to the list.
 
+
+# Provision
+
 ## Provisioning the Micro Services Using Postman
 
 We provide a postman-request-collection as well as a postman-environment that defines variables that are used to hold values received in responses.
@@ -97,7 +100,7 @@ The first request will retrieve a token. The response should look like this, wit
 ```
 
 If you don't get a token there is something wrong with your setup. The token is necessary for authentication in other requests thus be sure that this steps works.
-Important: Be sure to execute the requests in the right order! 
+Important: Be sure to execute the requests in the right order!
 The outcome is often stored in variables - check the Tests section of the requests.
 
 Use the Postman Runner to import accounts in step 08.1.
@@ -169,10 +172,11 @@ docker volume rm external_tools_postgres-volume
 docker-compose up
 ```
 
+## Note:
+**These scripts are ideal for a docker swarm deployment environment. If you are to deploy Fineract CN using Docker swarm you will have remove the network configuration from the docker-compose script and implement a load balancer (using docker swarm) that reflects the network configuratioin you just removed from the compose file.**
+
 ### Automating Postman scripts
-
 You can use [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) to run Postman scripts from command line.
-
 
 ## TODO
 - Adjust scripts for Kubernetes
