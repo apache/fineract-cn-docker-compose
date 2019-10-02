@@ -490,7 +490,7 @@
 					"raw": "[\n\t{\n\t\t\"name\": \"identity-v1\"\n\t}\n]"
 				},
 				"url": {
-					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/s{{tenantIdentifier}}/applications",
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
 					"protocol": "http",
 					"host": [
 						"{{provisionerUrl}}"
@@ -499,7 +499,7 @@
 						"provisioner",
 						"v1",
 						"tenants",
-						"s{{tenantIdentifier}}",
+						"{{tenantIdentifier}}",
 						"applications"
 					]
 				}
@@ -543,7 +543,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"rhythm-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://rhythym-ms:2022/rhythm/v1\"\n}",
+					"raw": "{\n\t\"name\": \"rhythm-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://rhythm-ms:2022/rhythm/v1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
