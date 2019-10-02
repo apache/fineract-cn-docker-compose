@@ -16,6 +16,8 @@ services:
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2020
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.initialclientid: ${SYSTEM_INITIAL_CLIENT_ID}
       system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
@@ -26,7 +28,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 10s
         max_attempts: 3
     networks:
@@ -39,6 +41,10 @@ services:
     ports:
       - "2021:2021"
     environment:
+      bonecp.partitionCount: 1
+      bonecp.maxConnectionsPerPartition: 4
+      bonecp.minConnectionsPerPartition: 1
+      bonecp.acquireIncrement: 1
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
       cassandra.cluster.pwd: ${CASSANDRA_CLUSTER_PASSWORD}
       cassandra.cluster.user: ${CASSANDRA_CLUSTER_USER}
@@ -46,15 +52,18 @@ services:
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
+      identity.token.refresh.secureCookie: "false" # demoserver
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2021
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
     deploy:
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: any
         delay: 10s
         max_attempts: 3
     networks:
@@ -69,25 +78,27 @@ services:
       - "2022:2022"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
+      rhythm.beatCheckRate: 600000
+      rhythm.user: ${SCHEDULER_USER_NAME}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2022
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-      rhythm.beatCheckRate: 600000
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
-          ipv4_address: ${RHYTHM_IP}
+        ipv4_address: ${RHYTHM_IP}
 
   office-ms:
     image: apache/fineract-cn-office:latest
@@ -95,23 +106,20 @@ services:
       - "2023:2023"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2023
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
       system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
       system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -123,21 +131,19 @@ services:
       - "2024:2024"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2024
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
+      system.initialclientid: ${SYSTEM_INITIAL_CLIENT_ID}
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -149,21 +155,18 @@ services:
     image: apache/fineract-cn-accounting:latest
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2025
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -175,6 +178,7 @@ services:
       - "2026:2026"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
@@ -182,16 +186,12 @@ services:
       custom.postgresql.user: ${POSTGRESQL_USER}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2026
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -203,21 +203,18 @@ services:
       - "2027:2027"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2027
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -229,21 +226,18 @@ services:
       - "2028:2028"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2028
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -255,21 +249,18 @@ services:
       - "2029:2029"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2029
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -281,21 +272,18 @@ services:
       - "2030:2030"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2030
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -307,21 +295,18 @@ services:
       - "2031:2031"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2031
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -333,21 +318,18 @@ services:
       - "2032:2032"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2032
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -356,24 +338,21 @@ services:
   notifications-ms:
     image: apache/fineract-cn-notifications:latest
     ports:
-     - "2033:2033"
+      - "2033:2033"
     environment:
       activemq.brokerUrl: ${ACTIVEMQ_BROKER_URL}
+      cassandra.clusterName: ${CASSANDRA_CLUSTER_NAME}
       cassandra.contactPoints: ${CASSANDRA_CONTACT_POINTS}
       eureka.client.serviceUrl.defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
       eureka.instance.hostname: ${EUREKA_INSTANCE_HOSTNAME}
       postgresql.host: ${POSTGRESQL_HOST}
       ribbon.listOfServers: ${RIBBON_EUREKA_SERVER}
+      server.max-http-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE}
+      server.port: 2033
       spring.datasource.url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/seshat
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:
@@ -383,12 +362,6 @@ services:
     image: apache/fineract-cn-fims-web-app:latest
     ports:
       - "8888:8888"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
     networks:
       external_tools_default:
       fineract:

@@ -490,7 +490,7 @@
 					"raw": "[\n\t{\n\t\t\"name\": \"identity-v1\"\n\t}\n]"
 				},
 				"url": {
-					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/s{{tenantIdentifier}}/applications",
+					"raw": "http://{{provisionerUrl}}/provisioner/v1/tenants/{{tenantIdentifier}}/applications",
 					"protocol": "http",
 					"host": [
 						"{{provisionerUrl}}"
@@ -499,7 +499,7 @@
 						"provisioner",
 						"v1",
 						"tenants",
-						"s{{tenantIdentifier}}",
+						"{{tenantIdentifier}}",
 						"applications"
 					]
 				}
@@ -519,6 +519,19 @@
 		},
 		{
 			"name": "04.000 Create rhythm-v1 application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d75f048-905b-41af-b767-4314d5e3a050",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -543,7 +556,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"rhythm-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://rhythym-ms:2022/rhythm/v1\"\n}",
+					"raw": "{\n\t\"name\": \"rhythm-v1\",\n\t\"description\": \"Customer Service\",\n\t\"vendor\": \"Apache Fineract\",\n\t\"homepage\": \"http://rhythm-ms:2022/rhythm/v1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -567,6 +580,19 @@
 		},
 		{
 			"name": "04.001 Assign rhythm-v1 for Tenant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba66d4b9-95a1-45de-9d59-d54308c72273",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -1985,6 +2011,7 @@
 						"id": "c64b529c-6e8a-4ef1-ab0d-a58b9499ade9",
 						"exec": [
 							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							"setTimeout(function(){}, [3000]);",
 							""
 						],
 						"type": "text/javascript"
@@ -2032,6 +2059,19 @@
 		},
 		{
 			"name": "05.2 Create Admin User mifos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9486d316-2aca-409a-88ff-f17770249dca",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -2091,6 +2131,16 @@
 							"var jsonData = JSON.parse(responseBody);",
 							"postman.setEnvironmentVariable(\"adminUserToken\", jsonData.accessToken);",
 							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f0680830-0535-4a81-9151-84e78309789c",
+						"exec": [
+							"var delay3seconds = setTimeout(function(){}, [3000]);"
 						],
 						"type": "text/javascript"
 					}
@@ -2428,6 +2478,16 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5e84b9b4-361a-4ab5-9ef7-1766a05d940e",
+						"exec": [
+							"var delay3seconds = setTimeout(function(){}, [3000]);"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2662,7 +2722,7 @@
 					"script": {
 						"id": "5830a8cd-f000-4b41-bfd2-1ac8c96812e4",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
 							"",
 							"",
 							"",
@@ -2800,6 +2860,19 @@
 		},
 		{
 			"name": "07.1 Create INCOME ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6260a2d4-def6-40e4-a87e-38f3d01f16b3",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -2841,6 +2914,19 @@
 		},
 		{
 			"name": "07.2 Create EXPENSE Ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be1a9019-cb18-4084-802b-cc6169e0b091",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -2882,6 +2968,19 @@
 		},
 		{
 			"name": "07.3 Create ASSETS ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3585bd0e-9598-43e6-b678-645bd64855dd",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -2923,6 +3022,19 @@
 		},
 		{
 			"name": "07.4 Create LIABILITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "708e63ea-73ac-4c20-a92d-915fba3135f6",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -2964,6 +3076,19 @@
 		},
 		{
 			"name": "07.5 Create EQUITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e240003c-12d2-492c-bf43-970ed16564d5",
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -3644,7 +3769,7 @@
 			"response": []
 		},
 		{
-			"name": "11.2. Get customer products",
+			"name": "11.20. Get customer products",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -3687,6 +3812,56 @@
 						{
 							"key": "customer",
 							"value": "customer10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11.21. Get member1 products",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances?customer=member1",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances"
+					],
+					"query": [
+						{
+							"key": "customer",
+							"value": "member1"
 						}
 					]
 				}

@@ -5,11 +5,13 @@ This project contains Docker Compose Scripts for running Fineract CN especially 
 - Docker
 - Docker-compose
 
-## Deploy and provision Fineract CN
+# Deploy and provision Fineract CN
 
-You can either deploy and provision Fineract CN automatically using bash scripts or manually using postman.
+You can either deploy and provision Fineract CN automatically using bash scripts or manually using Postman.
+Postman is the preferred way as it is more tested and this way you understand better what is happening.
+Also this way you don't have to start all the micro services (helpful if your workstation is lacking resources).
 
-## 1. Deploy Fineract automtically using bash scripts
+# 1. Deploy and provision Fineract automtically using bash scripts
 
  - To start up all the Fineract CN services run:
 
@@ -63,7 +65,7 @@ Running all services together consumes a lot of memory. So you can start a subse
 
 For example you could start the following additional micro services and an fims-web-app:
 ```
-docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms fims-web-app
+docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms office-ms fims-web-app
 ```
 
 If you want you can add other micro services (listed in docker-compose.yml) to the list.
@@ -116,7 +118,7 @@ docker-compose logs provisioner-ms
 2. Reach out to [mailing list](https://lists.apache.org/list.html?dev@fineract.apache.org) with the relevant details
 
 
-### Sign-in using fims-web-app
+# Sign-in using fims-web-app
 
 Prerequisites: Fineract-CN has been successfully provisioned by following the instructions in the previous sections
 User ```mifos``` is created in the the last two requests (user creation and role assignment) in the postman request-list.
@@ -133,7 +135,7 @@ password: password
 ```
 
 ### Use the Postman scripts when running locally
-Postman scripts use service names (postgres, provisioner-ms, etc) when refering to different services.
+Postman scripts use service names (postgres, provisioner-ms, etc) when referring to different services.
 If you want to use the same Postman scripts when running micro services locally then add into your hosts (/etc/hosts in Unix) file:
 
 ```
@@ -159,6 +161,8 @@ If you want to use the same Postman scripts when running micro services locally 
 
 ### How to reset everything and start from scratch
 
+Run ./shut-down-and-reset.sh or
+
 ```
 cd external-tools
 docker-compose stop
@@ -171,9 +175,10 @@ docker-compose up
 ## Note:
 **These scripts are ideal for a docker swarm deployment environment. If you are to deploy Fineract CN using Docker swarm you will have remove the network configuration from the docker-compose script and implement a load balancer (using docker swarm) that reflects the network configuratioin you just removed from the compose file.**
 
-## TODO
+### Automating Postman scripts
+You can use [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) to run Postman scripts from command line.
 
-- Provision the web services using a script
+## TODO
 - Adjust scripts for Kubernetes
 
 There are some scripts in [https://github.com/openMF/fineract-cn-containers](https://github.com/openMF/fineract-cn-containers)
