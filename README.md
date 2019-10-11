@@ -4,6 +4,7 @@ This project contains Docker Compose Scripts for running Fineract CN especially 
 ## Requirements
 - Docker
 - Docker-compose
+- Java
 
 # Deploy and provision Fineract CN
 
