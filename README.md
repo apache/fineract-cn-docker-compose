@@ -12,7 +12,7 @@ You can either deploy and provision Fineract CN automatically using bash scripts
 Postman is the preferred way as it is more tested and this way you understand better what is happening.
 Also this way you don't have to start all the micro services (helpful if your workstation is lacking resources).
 
-# 1. Deploy and provision Fineract automtically using bash scripts
+# 1. Deploy and provision Fineract automatically using bash scripts
 
  - To start up all the Fineract CN services run:
 
