@@ -66,13 +66,18 @@ Running all services together consumes a lot of memory. So you can start a subse
 
 For example you could start the following additional micro services and an fims-web-app:
 ```
-docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms office-ms fims-web-app
+docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms office-ms teller-ms fims-web-app
 ```
-
 If you want you can add other micro services (listed in docker-compose.yml) to the list.
 
+Wait for all the started services (except provisioner) to appear at [Eureka console](http://eureka:8761/).
 
 # Provision
+
+## Description of provisioning logic
+
+Provisioning logic is described briefly [here](https://cwiki.apache.org/confluence/display/FINERACT/Fineract+CN+demo-server).
+Instead demo_server we have Postman scripts and we use 'playground' as tenant name we want to provision.
 
 ## Provisioning the Micro Services Using Postman
 
@@ -115,8 +120,9 @@ Check the container for details of failures (if any):
 
 docker-compose logs provisioner-ms
 
+2. Check that apps have registered with eureka: http://localhost:8761/
 
-2. Reach out to [mailing list](https://lists.apache.org/list.html?dev@fineract.apache.org) with the relevant details
+3. Reach out to [mailing list](https://lists.apache.org/list.html?dev@fineract.apache.org) with the relevant details
 
 
 # Sign-in using fims-web-app
@@ -174,7 +180,7 @@ docker-compose up
 ```
 
 ## Note:
-**These scripts are ideal for a docker swarm deployment environment. If you are to deploy Fineract CN using Docker swarm you will have remove the network configuration from the docker-compose script and implement a load balancer (using docker swarm) that reflects the network configuratioin you just removed from the compose file.**
+**These scripts are ideal for a docker swarm deployment environment. If you are to deploy Fineract CN using Docker swarm you will have remove the network configuration from the docker-compose script and implement a load balancer (using docker swarm) that reflects the network configuration you just removed from the compose file.**
 
 ### Automating Postman scripts
 You can use [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) to run Postman scripts from command line.
