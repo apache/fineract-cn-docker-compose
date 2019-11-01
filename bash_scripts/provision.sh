@@ -261,6 +261,48 @@ function set-application-permission-enabled-for-user {
     echo "Enabled permission, $permission for service $service"
 }
 
+function create_chart_of_accounts {
+    local ledger_file="ledgers.csv"
+    local accounts_file="accounts.csv"
+    local tenant="$1"
+    local user="$2"
+
+    while IFS="," read -r parent_id id description ledger_type show; do
+        if [ parent_id = "" ]; then
+            create_ledger $tenant $user $id $description $ledger_type $show
+        else
+            echo "It's a child"
+        fi
+
+    done < "$ledger_file"
+}
+
+function create_ledger {
+    local tenant
+    local user
+    local id
+    local description
+    local ledger_type
+    local show
+
+    curl -H "Content-Type: application/json" -H "User: ${users}" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
+        --data '{
+            "type": "'"$ledger_type"'",
+            "identifier": "'"$id"'",
+            "name": "'"$id"'",
+            "description": "'"$description"'",
+            "parentLedgerIdentifier": "",
+            "subLedgers": [],
+            "totalValue": 0,
+            "createdOn": "",
+            "createdBy": "",
+            "lastModifiedOn": "",
+            "lastModifiedBy": "",
+            "showAccountsInChart": '$show'
+        }' \
+        ${ACCOUNTING_URL}/ledgers
+}
+
 init-variables
 auto-seshat
 create-application "$IDENTITY_MS_NAME" "" "$MS_VENDOR" "$IDENTITY_URL"
