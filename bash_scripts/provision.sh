@@ -324,21 +324,27 @@ TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
 login ${TENANT} "antony" $ADMIN_PASSWORD
+provision-app ${TENANT} $RHYTHM_MS_NAME
+provision-app ${TENANT} $OFFICE_MS_NAME
+provision-app ${TENANT} $CUSTOMER_MS_NAME
+create-org-admin-role ${TENANT}
+# Base64Encode(init1@l23) = aW5pdDFAbDIz
+create-user ${TENANT} "antony" "operator" "aW5pdDFAbDIz" "orgadmin"
+login ${TENANT} "operator" "aW5pdDFAbDIz"
+update-password ${TENANT} "operator" "aW5pdDFAbDIz"
+login ${TENANT} "antony" $ADMIN_PASSWORD
 create-scheduler-role ${TENANT}
 # Base64Encode(p4ssw0rd) = cDRzc3cwcmQ=
 create-user ${TENANT} "antony" "imhotep" "cDRzc3cwcmQ=" "scheduler"
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
 update-password ${TENANT} "imhotep" "cDRzc3cwcmQ="
-provision-app ${TENANT} $RHYTHM_MS_NAME
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
-# Rhythm is not available at the moment
-# set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
-provision-app ${TENANT} $OFFICE_MS_NAME
+echo "Waiting for identity to create permission"
+sleep 15s
+set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
 provision-app ${TENANT} $ACCOUNTING_MS_NAME
 provision-app ${TENANT} $PORTFOLIO_MS_NAME
-# Rhythm is not available at the moment
-# set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
-provision-app ${TENANT} $CUSTOMER_MS_NAME
+set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
 provision-app ${TENANT} $DEPOSIT_MS_NAME
 provision-app ${TENANT} $TELLER_MS_NAME
 provision-app ${TENANT} $REPORT_MS_NAME
@@ -346,11 +352,4 @@ provision-app ${TENANT} $CHEQUES_MS_NAME
 provision-app ${TENANT} $PAYROLL_MS_NAME
 provision-app ${TENANT} $GROUP_MS_NAME
 provision-app ${TENANT} $NOTIFICATIONS_MS_NAME
-login ${TENANT} "antony" $ADMIN_PASSWORD
-create-org-admin-role ${TENANT}
-# Base64Encode(init1@l23) = aW5pdDFAbDIz
-create-user ${TENANT} "antony" "operator" "aW5pdDFAbDIz" "orgadmin"
-login ${TENANT} "operator" "aW5pdDFAbDIz"
-update-password ${TENANT} "operator" "aW5pdDFAbDIz"
-
 echo "COMPLETED PROVISIONING PROCESS."
