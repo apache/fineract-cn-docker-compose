@@ -48,9 +48,6 @@ services:
         condition: any
         delay: 10s
         max_attempts: 3
-    volumes:
-      - ./node_config:/etc/configs/:ro
-      - ./node_logs:/tmp/logs
     networks:
       external_tools_default:
       fineract:
@@ -96,9 +93,6 @@ services:
         condition: any
         delay: 10s
         max_attempts: 3
-    volumes:
-      - ./node_config:/etc/configs/:ro
-      - ./node_logs:/tmp/logs
     networks:
       external_tools_default:
       fineract:
@@ -151,9 +145,6 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
-    volumes:
-      - ./node_config:/etc/configs/:ro
-      - ./node_logs:/tmp/logs
     networks:
       external_tools_default:
       fineract:
@@ -199,8 +190,6 @@ services:
       system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
       system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
       system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
-      system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
-      system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
     networks:
       external_tools_default:
       fineract:

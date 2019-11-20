@@ -283,11 +283,12 @@ create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
 login ${TENANT} "antony" $ADMIN_PASSWORD
 create-scheduler-role ${TENANT}
-create-user ${TENANT} "antony" "imhotep" "p4ssw0rd" "scheduler"
-login ${TENANT} "imhotep" "p4ssw0rd"
-update-password ${TENANT} "imhotep" "p4ssw0rd"
+# Base64Encode(p4ssw0rd) = cDRzc3cwcmQ=
+create-user ${TENANT} "antony" "imhotep" "cDRzc3cwcmQ=" "scheduler"
+login ${TENANT} "imhotep" "cDRzc3cwcmQ="
+update-password ${TENANT} "imhotep" "cDRzc3cwcmQ="
 provision-app ${TENANT} $RHYTHM_MS_NAME
-login ${TENANT} "imhotep" "p4ssw0rd"
+login ${TENANT} "imhotep" "cDRzc3cwcmQ="
 # Rhythm is not available at the moment
 # set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
 provision-app ${TENANT} $OFFICE_MS_NAME
@@ -305,7 +306,9 @@ provision-app ${TENANT} $GROUP_MS_NAME
 provision-app ${TENANT} $NOTIFICATIONS_MS_NAME
 login ${TENANT} "antony" $ADMIN_PASSWORD
 create-org-admin-role ${TENANT}
-create-user ${TENANT} "antony" "operator" "init1@l23" "orgadmin"
-login ${TENANT} "operator" "init1@l"
+# Base64Encode(init1@l23) = aW5pdDFAbDIz
+create-user ${TENANT} "antony" "operator" "aW5pdDFAbDIz" "orgadmin"
+login ${TENANT} "operator" "aW5pdDFAbDIz"
+update-password ${TENANT} "operator" "aW5pdDFAbDIz"
 
 echo "COMPLETED PROVISIONING PROCESS."
