@@ -560,7 +560,7 @@ services:
         ipv4_address: ${GROUP_IP}
 
   notifications-ms:
-    image: apache/fineract-cn-notifications:latestC
+    image: apache/fineract-cn-notifications:latest
     ports:
       - "2033:2033"
     environment:
