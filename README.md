@@ -179,6 +179,12 @@ docker volume rm external_tools_postgres-volume
 docker-compose up
 ```
 
+## Integration tests
+We have a shell script that verifies if the setup still works.
+For this install [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) and 
+run the script ./integration_test.sh. It takes about 15minutes to complete.
+Beware that the script overwrites contents of .env file.
+
 ## Note:
 **These scripts are ideal for a docker swarm deployment environment. If you are to deploy Fineract CN using Docker swarm you will have remove the network configuration from the docker-compose script and implement a load balancer (using docker swarm) that reflects the network configuration you just removed from the compose file.**
 
