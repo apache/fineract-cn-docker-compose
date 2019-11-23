@@ -4,7 +4,7 @@ set -e
 function init-variables {
     CASSANDRA_REPLICATION_TYPE="Simple"
     CASSANDRA_CONTACT_POINTS="cassandra:9042"
-    CASSANDRA_CLUSTER_NAME="Datacenter1"
+    CASSANDRA_CLUSTER_NAME="datacenter1"
     CASSANDRA_REPLICAS="1"
 
     POSTGRES_DRIVER_CLASS="org.postgresql.Driver"
@@ -66,7 +66,7 @@ function create-application {
     local vendor="$3"
     local homepage="$4"
 
-    curl -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
+    curl -X POST -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
     --data '{ "name": "'"$name"'", "description": "'"$description"'", "vendor": "'"$vendor"'", "homepage": "'"$homepage"'" }' \
      ${PROVISIONER_URL}/applications
     echo "Created microservice: $name"
@@ -91,25 +91,25 @@ function create-tenant {
     local description="$3"
     local database_name="$4"
 
-    curl -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
+    curl -X POST -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
     --data '{
-	"identifier": "'"$identifier"'",
-	"name": "'"$name"'",
+	"identifier": "'$identifier'",
+	"name": "'$name'",
 	"description": "'"$description"'",
 	"cassandraConnectionInfo": {
-		"clusterName": "'"$CASSANDRA_CLUSTER_NAME"'",
-		"contactPoints": "'"$CASSANDRA_CONTACT_POINTS"'",
-		"keyspace": "'"$database_name"'",
-		"replicationType": "'"$CASSANDRA_REPLICATION_TYPE"'",
-		"replicas": "'"$CASSANDRA_REPLICAS"'"
+		"clusterName": "'$CASSANDRA_CLUSTER_NAME'",
+		"contactPoints": "'$CASSANDRA_CONTACT_POINTS'",
+		"keyspace": "'$database_name'",
+		"replicationType": "'$CASSANDRA_REPLICATION_TYPE'",
+		"replicas": "'$CASSANDRA_REPLICAS'"
 	},
 	"databaseConnectionInfo": {
-		"driverClass": "'"$POSTGRES_DRIVER_CLASS"'",
-		"databaseName": "'"$database_name"'",
-		"host": "'"$POSTGRES_HOST"'",
-		"port": "'"$POSTGRES_PORT"'",
-		"user": "'"$POSTGRES_USER"'",
-		"password": "'"$POSTGRES_PWD"'"
+		"driverClass": "'$POSTGRES_DRIVER_CLASS'",
+		"databaseName": "'$database_name'",
+		"host": "'$POSTGRES_HOST'",
+		"port": "'$POSTGRESQL_PORT'",
+		"user": "'$POSTGRESQL_USER'",
+		"password": "'$POSTGRES_PWD'"
 	}}' \
     ${PROVISIONER_URL}/tenants
     echo "Created tenant: $database_name"
@@ -282,21 +282,29 @@ TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
 login ${TENANT} "antony" $ADMIN_PASSWORD
+provision-app ${TENANT} $RHYTHM_MS_NAME
+provision-app ${TENANT} $OFFICE_MS_NAME
+provision-app ${TENANT} $CUSTOMER_MS_NAME
+create-org-admin-role ${TENANT}
+# Base64Encode(init1@l23) = aW5pdDFAbDIz
+create-user ${TENANT} "antony" "operator" "aW5pdDFAbDIz" "orgadmin"
+login ${TENANT} "operator" "aW5pdDFAbDIz"
+update-password ${TENANT} "operator" "aW5pdDFAbDIz"
+login ${TENANT} "antony" $ADMIN_PASSWORD
 create-scheduler-role ${TENANT}
 # Base64Encode(p4ssw0rd) = cDRzc3cwcmQ=
 create-user ${TENANT} "antony" "imhotep" "cDRzc3cwcmQ=" "scheduler"
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
 update-password ${TENANT} "imhotep" "cDRzc3cwcmQ="
-provision-app ${TENANT} $RHYTHM_MS_NAME
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
-# Rhythm is not available at the moment
-# set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
-provision-app ${TENANT} $OFFICE_MS_NAME
+echo "Waiting for Rhythm to provision"
+sleep 15s
+set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
 provision-app ${TENANT} $ACCOUNTING_MS_NAME
 provision-app ${TENANT} $PORTFOLIO_MS_NAME
-# Rhythm is not available at the moment
-# set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
-provision-app ${TENANT} $CUSTOMER_MS_NAME
+echo "Waiting for Portfolio to provision."
+sleep 45s
+set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
 provision-app ${TENANT} $DEPOSIT_MS_NAME
 provision-app ${TENANT} $TELLER_MS_NAME
 provision-app ${TENANT} $REPORT_MS_NAME
@@ -304,11 +312,4 @@ provision-app ${TENANT} $CHEQUES_MS_NAME
 provision-app ${TENANT} $PAYROLL_MS_NAME
 provision-app ${TENANT} $GROUP_MS_NAME
 provision-app ${TENANT} $NOTIFICATIONS_MS_NAME
-login ${TENANT} "antony" $ADMIN_PASSWORD
-create-org-admin-role ${TENANT}
-# Base64Encode(init1@l23) = aW5pdDFAbDIz
-create-user ${TENANT} "antony" "operator" "aW5pdDFAbDIz" "orgadmin"
-login ${TENANT} "operator" "aW5pdDFAbDIz"
-update-password ${TENANT} "operator" "aW5pdDFAbDIz"
-
 echo "COMPLETED PROVISIONING PROCESS."
