@@ -267,6 +267,36 @@ function create_chart_of_accounts {
     local tenant="$1"
     local user="$2"
 
+    create_ledgers "$ledger_file" "$tenant" "$user"
+    create_accounts "$accounts_file" "$tenant" "$user"
+}
+
+function create_accounts {
+    local accounts_file="$1"
+    local tenant="$2"
+    local user="$3"
+
+    echo ""
+    echo "Creating accounts..."
+    while IFS="," read -r parent_id id name; do
+        if [ "$parent_id" != "parentIdentifier" ]; then
+            local ledger_arr
+            local ledger_type
+
+            IFS=',' read -ra ledger_arr <<< $( grep $parent_id -m 1 ledgers.csv )
+            ledger_type=${ledger_arr[3]}
+            create_account "$tenant" "$user" "$parent_id" "$id" "$name" "$ledger_type"
+        fi
+    done < "$accounts_file"
+}
+
+function create_ledgers {
+    local ledger_file="$1"
+    local tenant="$2"
+    local user="$3"
+
+    echo ""
+    echo "Creating ledgers..."
     while IFS="," read -r parent_id id description ledger_type show; do
         if [ "$parent_id" != "parentIdentifier" ]; then
             if [ -z "$parent_id" ]; then
@@ -278,6 +308,30 @@ function create_chart_of_accounts {
         fi
 
     done < "$ledger_file"
+}
+
+function create_account {
+    local tenant="$1"
+    local user="$2"
+    local parent_id="$3"
+    local id="$4"
+    local name="$5"
+    local type="$6"
+
+    curl -X POST -H "Content-Type: application/json" -H "User: $user" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
+        --data '{
+            "type": "'"$type"'",
+            "identifier": "'"$id"'",
+            "name": '"$name"',
+            "name": '"$name"',
+            "holders": [],
+            "signatureAuthorities": [],
+            "balance": 0.0,
+            "ledger": "'"$parent_id"'"
+        }' \
+        ${ACCOUNTING_URL}/accounts
+    echo ""
+    echo "Created account $id : $name"
 }
 
 function create_ledger {
@@ -294,12 +348,6 @@ function create_ledger {
             "identifier": "'"$id"'",
             "name": "'"$id"'",
             "description": '"$description"',
-            "subLedgers": [],
-            "totalValue": 0,
-            "createdOn": "",
-            "createdBy": "",
-            "lastModifiedOn": "",
-            "lastModifiedBy": "",
             "showAccountsInChart": '$show'
         }' \
         ${ACCOUNTING_URL}/ledgers
@@ -323,12 +371,6 @@ function update_ledger {
             "name": "'"$id"'",
             "description": '"$description"',
             "parentLedgerIdentifier": "'"$parent_id"'",
-            "subLedgers": [],
-            "totalValue": 0,
-            "createdOn": "",
-            "createdBy": "",
-            "lastModifiedOn": "",
-            "lastModifiedBy": "",
             "showAccountsInChart": '$show'
         }' \
         ${ACCOUNTING_URL}/ledgers/${parent_id}
@@ -351,7 +393,7 @@ create-application "$PAYROLL_MS_NAME" "" "$MS_VENDOR" "$PAYROLL_URL"
 create-application "$GROUP_MS_NAME" "" "$MS_VENDOR" "$GROUP_URL"
 create-application "$NOTIFICATIONS_MS_NAME" "" "$MS_VENDOR" "$NOTIFICATIONS_URL"
 
-# Set tenant identifier
+# # Set tenant identifier
 TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
@@ -386,6 +428,6 @@ provision-app ${TENANT} $CHEQUES_MS_NAME
 provision-app ${TENANT} $PAYROLL_MS_NAME
 provision-app ${TENANT} $GROUP_MS_NAME
 provision-app ${TENANT} $NOTIFICATIONS_MS_NAME
-echo "COMPLETED PROVISIONING PROCESS."
 login ${TENANT} "operator" "aW5pdDFAbDIz"
 create_chart_of_accounts ${TENANT} "operator"
+echo "COMPLETED PROVISIONING PROCESS."
