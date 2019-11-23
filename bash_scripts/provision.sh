@@ -4,7 +4,7 @@ set -e
 function init-variables {
     CASSANDRA_REPLICATION_TYPE="Simple"
     CASSANDRA_CONTACT_POINTS="cassandra:9042"
-    CASSANDRA_CLUSTER_NAME="Datacenter1"
+    CASSANDRA_CLUSTER_NAME="datacenter1"
     CASSANDRA_REPLICAS="1"
 
     POSTGRES_DRIVER_CLASS="org.postgresql.Driver"
@@ -66,7 +66,7 @@ function create-application {
     local vendor="$3"
     local homepage="$4"
 
-    curl -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
+    curl -X POST -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
     --data '{ "name": "'"$name"'", "description": "'"$description"'", "vendor": "'"$vendor"'", "homepage": "'"$homepage"'" }' \
      ${PROVISIONER_URL}/applications
     echo "Created microservice: $name"
@@ -91,25 +91,25 @@ function create-tenant {
     local description="$3"
     local database_name="$4"
 
-    curl -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
+    curl -X POST -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
     --data '{
-	"identifier": "'"$identifier"'",
-	"name": "'"$name"'",
+	"identifier": "'$identifier'",
+	"name": "'$name'",
 	"description": "'"$description"'",
 	"cassandraConnectionInfo": {
-		"clusterName": "'"$CASSANDRA_CLUSTER_NAME"'",
-		"contactPoints": "'"$CASSANDRA_CONTACT_POINTS"'",
-		"keyspace": "'"$database_name"'",
-		"replicationType": "'"$CASSANDRA_REPLICATION_TYPE"'",
-		"replicas": "'"$CASSANDRA_REPLICAS"'"
+		"clusterName": "'$CASSANDRA_CLUSTER_NAME'",
+		"contactPoints": "'$CASSANDRA_CONTACT_POINTS'",
+		"keyspace": "'$database_name'",
+		"replicationType": "'$CASSANDRA_REPLICATION_TYPE'",
+		"replicas": "'$CASSANDRA_REPLICAS'"
 	},
 	"databaseConnectionInfo": {
-		"driverClass": "'"$POSTGRES_DRIVER_CLASS"'",
-		"databaseName": "'"$database_name"'",
-		"host": "'"$POSTGRES_HOST"'",
-		"port": "'"$POSTGRES_PORT"'",
-		"user": "'"$POSTGRES_USER"'",
-		"password": "'"$POSTGRES_PWD"'"
+		"driverClass": "'$POSTGRES_DRIVER_CLASS'",
+		"databaseName": "'$database_name'",
+		"host": "'$POSTGRES_HOST'",
+		"port": "'$POSTGRESQL_PORT'",
+		"user": "'$POSTGRESQL_USER'",
+		"password": "'$POSTGRES_PWD'"
 	}}' \
     ${PROVISIONER_URL}/tenants
     echo "Created tenant: $database_name"
@@ -261,48 +261,6 @@ function set-application-permission-enabled-for-user {
     echo "Enabled permission, $permission for service $service"
 }
 
-function create_chart_of_accounts {
-    local ledger_file="ledgers.csv"
-    local accounts_file="accounts.csv"
-    local tenant="$1"
-    local user="$2"
-
-    while IFS="," read -r parent_id id description ledger_type show; do
-        if [ parent_id = "" ]; then
-            create_ledger $tenant $user $id $description $ledger_type $show
-        else
-            echo "It's a child"
-        fi
-
-    done < "$ledger_file"
-}
-
-function create_ledger {
-    local tenant
-    local user
-    local id
-    local description
-    local ledger_type
-    local show
-
-    curl -H "Content-Type: application/json" -H "User: ${users}" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
-        --data '{
-            "type": "'"$ledger_type"'",
-            "identifier": "'"$id"'",
-            "name": "'"$id"'",
-            "description": "'"$description"'",
-            "parentLedgerIdentifier": "",
-            "subLedgers": [],
-            "totalValue": 0,
-            "createdOn": "",
-            "createdBy": "",
-            "lastModifiedOn": "",
-            "lastModifiedBy": "",
-            "showAccountsInChart": '$show'
-        }' \
-        ${ACCOUNTING_URL}/ledgers
-}
-
 init-variables
 auto-seshat
 create-application "$IDENTITY_MS_NAME" "" "$MS_VENDOR" "$IDENTITY_URL"
@@ -339,11 +297,13 @@ create-user ${TENANT} "antony" "imhotep" "cDRzc3cwcmQ=" "scheduler"
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
 update-password ${TENANT} "imhotep" "cDRzc3cwcmQ="
 login ${TENANT} "imhotep" "cDRzc3cwcmQ="
-echo "Waiting for identity to create permission"
+echo "Waiting for Rhythm to provision"
 sleep 15s
 set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity__v1__app_self" "imhotep"
 provision-app ${TENANT} $ACCOUNTING_MS_NAME
 provision-app ${TENANT} $PORTFOLIO_MS_NAME
+echo "Waiting for Portfolio to provision."
+sleep 45s
 set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
 provision-app ${TENANT} $DEPOSIT_MS_NAME
 provision-app ${TENANT} $TELLER_MS_NAME
