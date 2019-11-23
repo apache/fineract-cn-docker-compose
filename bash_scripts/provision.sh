@@ -261,6 +261,122 @@ function set-application-permission-enabled-for-user {
     echo "Enabled permission, $permission for service $service"
 }
 
+function create_chart_of_accounts {
+    local ledger_file="ledgers.csv"
+    local accounts_file="accounts.csv"
+    local tenant="$1"
+    local user="$2"
+
+    create_ledgers "$ledger_file" "$tenant" "$user"
+    create_accounts "$accounts_file" "$tenant" "$user"
+}
+
+function create_accounts {
+    local accounts_file="$1"
+    local tenant="$2"
+    local user="$3"
+
+    echo ""
+    echo "Creating accounts..."
+    while IFS="," read -r parent_id id name; do
+        if [ "$parent_id" != "parentIdentifier" ]; then
+            local ledger_arr
+            local ledger_type
+
+            IFS=',' read -ra ledger_arr <<< $( grep $parent_id -m 1 ledgers.csv )
+            ledger_type=${ledger_arr[3]}
+            create_account "$tenant" "$user" "$parent_id" "$id" "$name" "$ledger_type"
+        fi
+    done < "$accounts_file"
+}
+
+function create_ledgers {
+    local ledger_file="$1"
+    local tenant="$2"
+    local user="$3"
+
+    echo ""
+    echo "Creating ledgers..."
+    while IFS="," read -r parent_id id description ledger_type show; do
+        if [ "$parent_id" != "parentIdentifier" ]; then
+            if [ -z "$parent_id" ]; then
+                create_ledger "$tenant" "$user" "$id" "$description" "$ledger_type" "$show"
+                sleep 5s
+            else
+                update_ledger "$tenant" "$user" "$id" "$parent_id" "$description" "$ledger_type" "$show"
+            fi
+        fi
+
+    done < "$ledger_file"
+}
+
+function create_account {
+    local tenant="$1"
+    local user="$2"
+    local parent_id="$3"
+    local id="$4"
+    local name="$5"
+    local type="$6"
+
+    curl -X POST -H "Content-Type: application/json" -H "User: $user" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
+        --data '{
+            "type": "'"$type"'",
+            "identifier": "'"$id"'",
+            "name": '"$name"',
+            "name": '"$name"',
+            "holders": [],
+            "signatureAuthorities": [],
+            "balance": 0.0,
+            "ledger": "'"$parent_id"'"
+        }' \
+        ${ACCOUNTING_URL}/accounts
+    echo ""
+    echo "Created account $id : $name"
+}
+
+function create_ledger {
+    local tenant="$1"
+    local user="$2"
+    local id="$3"
+    local description="$4"
+    local ledger_type="$5"
+    local show="$6"
+
+    curl -X POST -H "Content-Type: application/json" -H "User: $user" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
+        --data '{
+            "type": "'"$ledger_type"'",
+            "identifier": "'"$id"'",
+            "name": "'"$id"'",
+            "description": '"$description"',
+            "showAccountsInChart": '$show'
+        }' \
+        ${ACCOUNTING_URL}/ledgers
+    echo ""
+    echo "Created ledge account $id : $description"
+}
+
+function update_ledger {
+    local tenant="$1"
+    local user="$2"
+    local id="$3"
+    local parent_id="$4"
+    local description="$5"
+    local ledger_type="$6"
+    local show="$7"
+
+    curl -X POST -H "Content-Type: application/json" -H "User: $user" -H "Authorization: ${ACCESS_TOKEN}" -H "X-Tenant-Identifier: $tenant" \
+        --data '{
+            "type": "'"$ledger_type"'",
+            "identifier": "'"$id"'",
+            "name": "'"$id"'",
+            "description": '"$description"',
+            "parentLedgerIdentifier": "'"$parent_id"'",
+            "showAccountsInChart": '$show'
+        }' \
+        ${ACCOUNTING_URL}/ledgers/${parent_id}
+    echo "Add ledge account $id : $description to $parent_id"
+}
+
 init-variables
 auto-seshat
 create-application "$IDENTITY_MS_NAME" "" "$MS_VENDOR" "$IDENTITY_URL"
@@ -277,7 +393,7 @@ create-application "$PAYROLL_MS_NAME" "" "$MS_VENDOR" "$PAYROLL_URL"
 create-application "$GROUP_MS_NAME" "" "$MS_VENDOR" "$GROUP_URL"
 create-application "$NOTIFICATIONS_MS_NAME" "" "$MS_VENDOR" "$NOTIFICATIONS_URL"
 
-#Set tenant identifier
+# # Set tenant identifier
 TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
@@ -312,4 +428,6 @@ provision-app ${TENANT} $CHEQUES_MS_NAME
 provision-app ${TENANT} $PAYROLL_MS_NAME
 provision-app ${TENANT} $GROUP_MS_NAME
 provision-app ${TENANT} $NOTIFICATIONS_MS_NAME
+login ${TENANT} "operator" "aW5pdDFAbDIz"
+create_chart_of_accounts ${TENANT} "operator"
 echo "COMPLETED PROVISIONING PROCESS."
