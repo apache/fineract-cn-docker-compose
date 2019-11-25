@@ -47,7 +47,7 @@ If you run some service from localhost then [add these services to your hosts fi
 
 ### Start external tools (database, cassandra, etc)
 ```
-cd external-tools
+cd external_tools
 docker-compose up
 ```
 
@@ -171,7 +171,7 @@ If you want to use the same Postman scripts when running micro services locally 
 Run ./shut-down-and-reset.sh or
 
 ```
-cd external-tools
+cd external_tools
 docker-compose stop
 docker-compose rm
 docker volume rm external_tools_cassandra-volume
