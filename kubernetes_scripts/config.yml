@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: fineract-service-config
 data:
-  bonecp.acquireIncrement: "1"
-  bonecp.maxConnectionsPerPartition: "4"
-  bonecp.minConnectionsPerPartition: "1"
-  bonecp.partitionCount: "1"
+  bonecp.acquireIncrement: "1" #Might be absent for identity
+  bonecp.maxConnectionsPerPartition: "4" #Might be absent for identity
+  bonecp.minConnectionsPerPartition: "1" #Might be absent for identity
+  bonecp.partitionCount: "1" #Might be absent for identity
   cassandra.cl.delete: ONE
   cassandra.cl.read: ONE
   cassandra.cl.write: ONE
@@ -20,12 +20,11 @@ data:
   eureka.instance.leaseRenewalIntervalInSeconds: "20"
   eureka.registration.enabled: "true"
   feign.hystrix.enabled: "false"
-  postgresql.database: seshat
+  postgresql.database: seshat #Might be absent for identity
   ribbon.eureka.enabled: "true"
   server.max-http-header-size: "16384"
   spring.cloud.config.enabled: "false"
   spring.cloud.discovery.enabled: "true"
-  system.initialclientid: service-runner
   system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
   system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
   system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}

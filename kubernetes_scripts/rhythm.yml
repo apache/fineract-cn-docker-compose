@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: provisioner-service
+  name: rhythm-service
   namespace: default
 spec:
   selector:
-    app: provisioner-ms
+    app: rhythm-ms
   ports:
-    - port: 2020
-      targetPort: 2020
+    - port: 2022
+      targetPort: 2022
   type: LoadBalancer
 
 ---
@@ -16,13 +16,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: provisioner-ms-cluster
+  name: rhythm-ms-cluster
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: provisioner-ms
+      app: rhythm-ms
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -31,28 +31,28 @@ spec:
   template:
     metadata:
       labels:
-        app: provisioner-ms
+        app: rhythm-ms
     spec:
       containers:
-      - name: provisioner-ms
-        image: apache/fineract-cn-provisioner:latest
+      - name: rhythm-ms
+        image: apache/fineract-cn-rhythm:latest
         imagePullPolicy: IfNotPresent
         envFrom:
           - configMapRef:
               name: external-tools-config
           - configMapRef:
               name: fineract-service-config
-          - configMapRef:
-              name: provisioner-datasource-config
         env:
           - name: eureka.instance.hostname
-            value: provisioner-ms
+            value: rhythm-ms
           - name: server.port
-            value: "2020"
+            value: "2022"
           - name: spring.application.name
-            value: provisioner-v1
-          - name: system.initialclientid
-            value: service-runner
+            value: rhythm-v1
+          - name: rhythm.beatCheckRate
+            value: "600000"
+          - name: rhythm.user
+            value: "imhotep"
           - name: system.publicKey.modulus
             valueFrom:
               configMapKeyRef:
@@ -79,4 +79,4 @@ spec:
                 key: PRIVATE_KEY_EXPONENT
                 name: secret-config
         ports:
-          - containerPort: 2020
+          - containerPort: 2022

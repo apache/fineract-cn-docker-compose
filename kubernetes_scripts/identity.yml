@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: provisioner-service
+  name: identity-service
   namespace: default
 spec:
   selector:
-    app: provisioner-ms
+    app: identity-ms
   ports:
-    - port: 2020
-      targetPort: 2020
+    - port: 2021
+      targetPort: 2021
   type: LoadBalancer
 
 ---
@@ -16,13 +16,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: provisioner-ms-cluster
+  name: identity-ms-cluster
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: provisioner-ms
+      app: identity-ms
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -31,28 +31,26 @@ spec:
   template:
     metadata:
       labels:
-        app: provisioner-ms
+        app: identity-ms
     spec:
       containers:
-      - name: provisioner-ms
-        image: apache/fineract-cn-provisioner:latest
+      - name: identity-ms
+        image: apache/fineract-cn-identity:latest
         imagePullPolicy: IfNotPresent
         envFrom:
           - configMapRef:
               name: external-tools-config
           - configMapRef:
               name: fineract-service-config
-          - configMapRef:
-              name: provisioner-datasource-config
         env:
           - name: eureka.instance.hostname
-            value: provisioner-ms
+            value: identity-ms
           - name: server.port
-            value: "2020"
+            value: "2021"
           - name: spring.application.name
-            value: provisioner-v1
-          - name: system.initialclientid
-            value: service-runner
+            value: identity-v1
+          - name: identity.token.refresh.secureCookie
+            value: "false"
           - name: system.publicKey.modulus
             valueFrom:
               configMapKeyRef:
@@ -79,4 +77,4 @@ spec:
                 key: PRIVATE_KEY_EXPONENT
                 name: secret-config
         ports:
-          - containerPort: 2020
+          - containerPort: 2021
