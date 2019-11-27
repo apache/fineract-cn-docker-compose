@@ -39,11 +39,11 @@ spec:
         imagePullPolicy: IfNotPresent
         envFrom:
           - configMapRef:
-            name: external-tools-config
+              name: external-tools-config
           - configMapRef:
-            name: fineract-service-config
+              name: fineract-service-config
           - configMapRef:
-            name: provisioner-datasource-config
+              name: provisioner-datasource-config
         env:
           - name: eureka.instance.hostname
             value: provisioner-ms
