@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-cluster
+  namespace: default
+spec:
+  selector:
+    app: eureka
+  ports:
+  - port: 8761
+    targetPort: 8761
+  type: LoadBalancer
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: eureka-cluster
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: eureka
+    spec:
+      containers:
+        - image: docker.io/anh3h/eureka-server:latest
+          imagePullPolicy: IfNotPresent
+          name: eureka-server
+          ports:
+            - containerPort: 8761
+              name: http
+          livenessProbe:
+            httpGet:
+             path: /
+             port: 8761
+            initialDelaySeconds: 45
+            timeoutSeconds: 10
+            periodSeconds: 60
+            failureThreshold: 3
