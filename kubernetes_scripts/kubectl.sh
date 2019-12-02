@@ -48,8 +48,11 @@ kubectl create configmap secret-config ${config_param}
 echo ""
 echo "Starting Provisioner... "
 kubectl apply -f provisioner.yml
-provisioner_pod=$(kubectl get pods -l app=provisioner-ms --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
 echo "Waiting for provisioner to initialize seshat database... "
+provisioner_pod=""
+while [[ ${#provisioner_pod} -eq 0 ]] ; do
+     provisioner_pod=$(kubectl get pods -l app=provisioner-ms --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}')
+done
 sleep 5
 while ! kubectl logs ${provisioner_pod} | grep -q "Started ProvisionerApplication in"; do
   sleep 1
@@ -59,7 +62,14 @@ echo ""
 echo "Start remaining Fineract CN microservices... "
 kubectl apply -f identity.yml
 kubectl apply -f rhythm.yml
-# kubectl apply -f office.yml
-# kubectl apply -f customer.yml
-# kubectl apply -f ledger.yml
-# kubectl apply -f portfolio.yml
+kubectl apply -f office.yml
+kubectl apply -f customer.yml
+kubectl apply -f accounting.yml
+kubectl apply -f portfolio.yml
+kubectl apply -f deposit.yml
+kubectl apply -f teller.yml
+kubectl apply -f reporting.yml
+kubectl apply -f cheques.yml
+kubectl apply -f payroll.yml
+kubectl apply -f group.yml
+kubectl apply -f notifications.yml

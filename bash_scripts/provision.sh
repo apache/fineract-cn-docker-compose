@@ -20,7 +20,7 @@ function init-variables {
     CUSTOMER_URL="http://customer-ms:2024/customer/v1"
     ACCOUNTING_URL="http://accounting-ms:2025/accounting/v1"
     PORTFOLIO_URL="http://portfolio-ms:2026/portfolio/v1"
-    DEPOSIT_URL="http://deposit-account-management-ms:2027/deposit/v1"
+    DEPOSIT_URL="http://deposit-ms:2027/deposit/v1"
     TELLER_URL="http://teller-ms:2028/teller/v1"
     REPORT_URL="http://reporting-ms:2029/report/v1"
     CHEQUES_URL="http://cheques-ms:2030/cheques/v1"
@@ -393,7 +393,7 @@ create-application "$PAYROLL_MS_NAME" "" "$MS_VENDOR" "$PAYROLL_URL"
 create-application "$GROUP_MS_NAME" "" "$MS_VENDOR" "$GROUP_URL"
 create-application "$NOTIFICATIONS_MS_NAME" "" "$MS_VENDOR" "$NOTIFICATIONS_URL"
 
-# # Set tenant identifier
+# Set tenant identifier
 TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
@@ -419,7 +419,7 @@ set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity_
 provision-app ${TENANT} $ACCOUNTING_MS_NAME
 provision-app ${TENANT} $PORTFOLIO_MS_NAME
 echo "Waiting for Portfolio to provision."
-sleep 45s
+sleep 60s
 set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
 provision-app ${TENANT} $DEPOSIT_MS_NAME
 provision-app ${TENANT} $TELLER_MS_NAME

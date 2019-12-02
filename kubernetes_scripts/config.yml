@@ -25,8 +25,3 @@ data:
   server.max-http-header-size: "16384"
   spring.cloud.config.enabled: "false"
   spring.cloud.discovery.enabled: "true"
-  system.privateKey.exponent: ${PRIVATE_KEY_EXPONENT}
-  system.privateKey.modulus: ${PRIVATE_KEY_MODULUS}
-  system.publicKey.exponent: ${PUBLIC_KEY_EXPONENT}
-  system.publicKey.modulus: ${PUBLIC_KEY_MODULUS}
-  system.publicKey.timestamp: ${PUBLIC_KEY_TIMESTAMP}
