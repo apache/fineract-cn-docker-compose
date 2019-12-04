@@ -21,3 +21,4 @@ kubectl delete -f postgres.yml
 kubectl delete -f cassandra.yml
 kubectl delete -f eureka.yml
 kubectl delete -f activemq.yml
+rm ../bash_scripts/cluster_addressess.txt
