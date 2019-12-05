@@ -20,7 +20,7 @@ function init-variables {
     CUSTOMER_URL="http://customer-ms:2024/customer/v1"
     ACCOUNTING_URL="http://accounting-ms:2025/accounting/v1"
     PORTFOLIO_URL="http://portfolio-ms:2026/portfolio/v1"
-    DEPOSIT_URL="http://deposit-account-management-ms:2027/deposit/v1"
+    DEPOSIT_URL="http://deposit-ms:2027/deposit/v1"
     TELLER_URL="http://teller-ms:2028/teller/v1"
     REPORT_URL="http://reporting-ms:2029/report/v1"
     CHEQUES_URL="http://cheques-ms:2030/cheques/v1"
@@ -42,6 +42,40 @@ function init-variables {
     PAYROLL_MS_NAME="payroll-v1"
     GROUP_MS_NAME="group-v1"
     NOTIFICATIONS_MS_NAME="notification-v1"
+}
+
+function config-kubernetes-addresss {
+    kubectl get services -o=jsonpath="{range .items[*]}{.metadata.name}{\"=\"}{.status.loadBalancer.ingress[0].ip}{\"\n\"}{end}" > cluster_addressess.txt
+    while IFS="=" read -r service ip; do
+        if [[ ${#ip} -gt 0  ]]
+        then
+            case "$service" in
+                '#'*) ;;
+                "cassandra-cluster")    CASSANDRA_CONTACT_POINTS="$ip:9042" ;;
+                "postgresdb-cluster")   POSTGRES_HOST="$ip" ;;
+                "provisioner-service")   PROVISIONER_URL="http://$ip:2020/provisioner/v1" ;;
+                "identity-service")   IDENTITY_URL="http://$ip:2021/identity/v1" ;;
+                "rhythm-service")   RHYTHM_URL="http://$ip:2022/rhythm/v1" ;;
+                "office-service") OFFICE_URL="http://$ip:2023/office/v1" ;;
+                "customer-service")   CUSTOMER_URL="http://$ip:2024/customer/v1" ;;
+                "accounting-service")   ACCOUNTING_URL="http://$ip:2025/accounting/v1" ;;
+                "portfolio-service")   PORTFOLIO_URL="http://$ip:2026/portfolio/v1" ;;
+                "deposit-service")   DEPOSIT_URL="http://$ip:2027/deposit/v1" ;;
+                "teller-service")   TELLER_URL="http://$ip:2028/teller/v1" ;;
+                "reporting-service")   REPORT_URL="http://$ip:2029/report/v1" ;;
+                "cheques-service")   CHEQUES_URL="http://$ip:2030/cheques/v1" ;;
+                "payroll-service")   PAYROLL_URL="http://$ip:2031/payroll/v1" ;;
+                "group-service")   GROUP_URL="http://$ip:2032/group/v1" ;;
+                "notification-service")   NOTIFICATIONS_URL="http://$ip:2033/notification/v1" ;;
+            esac
+        elif [[ ${service} != "kubernetes"  ]]
+        then
+            echo "$service ip has not been conigured"
+            exit 1
+        fi
+    done < "cluster_addressess.txt"
+
+    echo "Successfully configured kubernetes ip addresses"
 }
 
 function auto-seshat {
@@ -378,6 +412,16 @@ function update_ledger {
 }
 
 init-variables
+if [[ "$1" == "--deploy-on-kubernetes" ]]; then
+    config-kubernetes-addresss
+    TENANT=$2
+elif [[ "$2" == "--deploy-on-kubernetes" ]]; then
+    config-kubernetes-addresss
+    TENANT=$1
+else
+    TENANT=$1
+fi
+
 auto-seshat
 create-application "$IDENTITY_MS_NAME" "" "$MS_VENDOR" "$IDENTITY_URL"
 create-application "$RHYTHM_MS_NAME" "" "$MS_VENDOR" "$RHYTHM_URL"
@@ -393,8 +437,7 @@ create-application "$PAYROLL_MS_NAME" "" "$MS_VENDOR" "$PAYROLL_URL"
 create-application "$GROUP_MS_NAME" "" "$MS_VENDOR" "$GROUP_URL"
 create-application "$NOTIFICATIONS_MS_NAME" "" "$MS_VENDOR" "$NOTIFICATIONS_URL"
 
-# # Set tenant identifier
-TENANT=$1
+# Set tenant identifier
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
 login ${TENANT} "antony" $ADMIN_PASSWORD
