@@ -44,6 +44,40 @@ function init-variables {
     NOTIFICATIONS_MS_NAME="notification-v1"
 }
 
+function config-kubernetes-addresss {
+    kubectl get services -o=jsonpath="{range .items[*]}{.metadata.name}{\"=\"}{.status.loadBalancer.ingress[0].ip}{\"\n\"}{end}" > cluster_addressess.txt
+    while IFS="=" read -r service ip; do
+        if [[ ${#ip} -gt 0  ]]
+        then
+            case "$service" in
+                '#'*) ;;
+                "cassandra-cluster")    CASSANDRA_CONTACT_POINTS="$ip:9042" ;;
+                "postgresdb-cluster")   POSTGRES_HOST="$ip" ;;
+                "provisioner-service")   PROVISIONER_URL="http://$ip:2020/provisioner/v1" ;;
+                "identity-service")   IDENTITY_URL="http://$ip:2021/identity/v1" ;;
+                "rhythm-service")   RHYTHM_URL="http://$ip:2022/rhythm/v1" ;;
+                "office-service") OFFICE_URL="http://$ip:2023/office/v1" ;;
+                "customer-service")   CUSTOMER_URL="http://$ip:2024/customer/v1" ;;
+                "accounting-service")   ACCOUNTING_URL="http://$ip:2025/accounting/v1" ;;
+                "portfolio-service")   PORTFOLIO_URL="http://$ip:2026/portfolio/v1" ;;
+                "deposit-service")   DEPOSIT_URL="http://$ip:2027/deposit/v1" ;;
+                "teller-service")   TELLER_URL="http://$ip:2028/teller/v1" ;;
+                "reporting-service")   REPORT_URL="http://$ip:2029/report/v1" ;;
+                "cheques-service")   CHEQUES_URL="http://$ip:2030/cheques/v1" ;;
+                "payroll-service")   PAYROLL_URL="http://$ip:2031/payroll/v1" ;;
+                "group-service")   GROUP_URL="http://$ip:2032/group/v1" ;;
+                "notification-service")   NOTIFICATIONS_URL="http://$ip:2033/notification/v1" ;;
+            esac
+        elif [[ ${service} != "kubernetes"  ]]
+        then
+            echo "$service ip has not been conigured"
+            exit 1
+        fi
+    done < "cluster_addressess.txt"
+
+    echo "Successfully configured kubernetes ip addresses"
+}
+
 function auto-seshat {
     TOKEN=$( curl -s -X POST -H "Content-Type: application/json" \
         "$PROVISIONER_URL"'/auth/token?grant_type=password&client_id=service-runner&username=wepemnefret&password=oS/0IiAME/2unkN1momDrhAdNKOhGykYFH/mJN20' \
@@ -378,6 +412,16 @@ function update_ledger {
 }
 
 init-variables
+if [[ "$1" == "--deploy-on-kubernetes" ]]; then
+    config-kubernetes-addresss
+    TENANT=$2
+elif [[ "$2" == "--deploy-on-kubernetes" ]]; then
+    config-kubernetes-addresss
+    TENANT=$1
+else
+    TENANT=$1
+fi
+
 auto-seshat
 create-application "$IDENTITY_MS_NAME" "" "$MS_VENDOR" "$IDENTITY_URL"
 create-application "$RHYTHM_MS_NAME" "" "$MS_VENDOR" "$RHYTHM_URL"
@@ -394,7 +438,6 @@ create-application "$GROUP_MS_NAME" "" "$MS_VENDOR" "$GROUP_URL"
 create-application "$NOTIFICATIONS_MS_NAME" "" "$MS_VENDOR" "$NOTIFICATIONS_URL"
 
 # Set tenant identifier
-TENANT=$1
 create-tenant ${TENANT} "${TENANT}" "All in one Demo Server" ${TENANT}
 assign-identity-ms ${TENANT}
 login ${TENANT} "antony" $ADMIN_PASSWORD
@@ -419,7 +462,7 @@ set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "identity_
 provision-app ${TENANT} $ACCOUNTING_MS_NAME
 provision-app ${TENANT} $PORTFOLIO_MS_NAME
 echo "Waiting for Portfolio to provision."
-sleep 60s
+sleep 45s
 set-application-permission-enabled-for-user ${TENANT} $RHYTHM_MS_NAME "portfolio__v1__khepri" "imhotep"
 provision-app ${TENANT} $DEPOSIT_MS_NAME
 provision-app ${TENANT} $TELLER_MS_NAME

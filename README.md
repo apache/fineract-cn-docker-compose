@@ -1,16 +1,43 @@
 # Fineract CN Docker-Compose scripts
-This project contains Docker Compose Scripts for running Fineract CN especially in Development.
+This project contains Docker and Kubernetes Scripts for deploying Fineract CN, especially in Development.
 
 ## Requirements
+- Kubernetes
 - Docker
 - Docker-compose
 - Java
 
-# Deploy and provision Fineract CN
+# Deploy and provision Fineract CN using Kubernetes
+Make sure you set up and connect to your Kubernetes cluster. You can follow [this](https://cwiki.apache.org/confluence/display/FINERACT/Install+and+configure+kubectl+and+Google+Cloud+SDK+on+ubuntu+16.04) guide to set up a Kubernetes cluster on GKE.
+
+ - Enter the Kubernetes directory.
+
+   `cd kubernetes_scripts`
+
+ - To deploy all the Fineract CN services on your cluster, run :
+
+    `bash kubectl-start-up.sh`
+ - You should make sure an external ip address had been assigned to all the deployed services by running:
+
+    `kubectl get services`
+ - Finally provison the microservices by running:
+
+    `cd bash_scripts`
+
+    `bash provision.sh --deploy-on-kubernetes playground` # where playground is your tenant name
+
+ - To shut down and reset you cluster, run:
+
+    `bash kubectl-shut-down.sh`
+
+# Deploy and provision Fineract CN using Docker and Docker-compose
 
 You can either deploy and provision Fineract CN automatically using bash scripts or manually using Postman.
-Postman is the preferred way as it is more tested and this way you understand better what is happening.
-Also this way you don't have to start all the micro services (helpful if your workstation is lacking resources).
+
+## Hints:
+- Postman is the preferred approach if you want to understand what is happening and, Bash is preferred when you already understand what's happening so, you simply what to automate the process.
+
+- With Postman, you have more flexibility in deciding which service gets to be deployed and provisioned, therefore, making it the preferred route if you have limited resources.
 
 # 1. Deploy and provision Fineract automatically using bash scripts
 
@@ -24,7 +51,7 @@ Also this way you don't have to start all the micro services (helpful if your wo
 
     `cd bash_scripts`
 
-    `bash provision.sh playground` #where playground is your tenant name
+    `bash provision.sh playground` # where playground is your tenant name
 
 ## 2. Deploy Fineract manually using postman
 
@@ -181,7 +208,7 @@ docker-compose up
 
 ## Integration tests
 We have a shell script that verifies if the setup still works.
-For this install [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) and 
+For this install [Newman](https://learning.getpostman.com/docs/postman/collection_runs/command_line_integration_with_newman/) and
 run the script ./integration_test.sh. It takes about 15minutes to complete.
 Beware that the script overwrites contents of .env file.
 
