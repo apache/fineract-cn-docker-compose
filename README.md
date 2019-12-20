@@ -173,6 +173,7 @@ Postman scripts use service names (postgres, provisioner-ms, etc) when referring
 If you want to use the same Postman scripts when running micro services locally then add into your hosts (/etc/hosts in Unix) file:
 
 ```
+127.0.0.1 eureka
 127.0.0.1 postgres
 127.0.0.1 cassandra
 127.0.0.1 provisioner-ms
