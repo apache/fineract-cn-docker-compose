@@ -16,8 +16,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: any
-        delay: 10s
+        condition: on-failure
         max_attempts: 3
 
   eureka:
@@ -32,8 +31,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: any
-        delay: 10s
+        condition: on-failure
         max_attempts: 3
 
   postgres:
@@ -63,8 +61,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
-        condition: any
-        delay: 10s
+        condition: on-failure
         max_attempts: 3
     volumes:
       - cassandra-volume:/var/lib/cassandra
