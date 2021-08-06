@@ -16,6 +16,15 @@ This project contains Docker and Kubernetes Scripts for deploying Fineract CN, e
 09. fineract-cn-crypto
 10. fineract-cn-test
 
+### Environment Variables 
+
+The following variables are required for publishg the binary artifacts. Values are examples, change them to fit your environment.
+```console
+ARTIFACTORY_URL = 'https://url-to-artifactory/artifactory/'
+ARTIFACTORY_USER = 'user'
+ARTIFACTORY_PASSWORD = 'password'
+ARTIFACTORY_REPOKEY = 'libs-snapshot-local'
+```
 ### Software Platform 
 
 1. Kubernetes
