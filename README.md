@@ -3,28 +3,6 @@ This project contains Docker and Kubernetes Scripts for deploying Fineract CN, e
 
 ## Requirements
 
-### Fineract CN Libraries
-
-01. fineract-cn-lang
-02. fineract-cn-postgresql
-03. fineract-cn-anubis
-04. fineract-cn-permitted-feign-client
-05. fineract-cn-identity
-06. fineract-cn-api
-07. fineract-cn-async
-08. fineract-cn-cassandra
-09. fineract-cn-crypto
-10. fineract-cn-test
-
-### Environment Variables 
-
-The following variables are required for publishg the binary artifacts. Values are examples, change them to fit your environment.
-```console
-ARTIFACTORY_URL = 'https://url-to-artifactory/artifactory/'
-ARTIFACTORY_USER = 'user'
-ARTIFACTORY_PASSWORD = 'password'
-ARTIFACTORY_REPOKEY = 'libs-snapshot-local'
-```
 ### Software Platform 
 
 1. Kubernetes
