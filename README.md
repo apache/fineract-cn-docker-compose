@@ -41,11 +41,11 @@ kubectl get services
  - Finally provison the microservices by running:
 ```console
 cd bash_scripts
-bash provision.sh --deploy-on-kubernetes playground` # where playground is your tenant name
+bash provision.sh --deploy-on-kubernetes playground # where playground is your tenant name
 ```
  - To shut down and reset you cluster, run:
 ```console
-bash kubectl-shut-down.sh`
+bash kubectl-shut-down.sh
 ```
 # Deploy and provision Fineract CN using Docker and Docker-compose
 
