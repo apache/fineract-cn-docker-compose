@@ -2,34 +2,38 @@
 This project contains Docker and Kubernetes Scripts for deploying Fineract CN, especially in Development.
 
 ## Requirements
-- Kubernetes
-- Docker
-- Docker-compose
-- Java
+
+### Software Platform 
+
+1. Kubernetes
+2. Docker
+3. Docker-compose
+4. Java
 
 # Deploy and provision Fineract CN using Kubernetes
 Make sure you set up and connect to your Kubernetes cluster. You can follow [this](https://cwiki.apache.org/confluence/display/FINERACT/Install+and+configure+kubectl+and+Google+Cloud+SDK+on+ubuntu+16.04) guide to set up a Kubernetes cluster on GKE.
 
  - Enter the Kubernetes directory.
-
-   `cd kubernetes_scripts`
-
+```console
+cd kubernetes_scripts
+```
  - To deploy all the Fineract CN services on your cluster, run :
-
-    `bash kubectl-start-up.sh`
+```console
+bash kubectl-start-up.sh
+```
  - You should make sure an external ip address had been assigned to all the deployed services by running:
-
-    `kubectl get services`
+```console
+kubectl get services
+```
  - Finally provison the microservices by running:
-
-    `cd bash_scripts`
-
-    `bash provision.sh --deploy-on-kubernetes playground` # where playground is your tenant name
-
+```console
+cd bash_scripts
+bash provision.sh --deploy-on-kubernetes playground # where playground is your tenant name
+```
  - To shut down and reset you cluster, run:
-
-    `bash kubectl-shut-down.sh`
-
+```console
+bash kubectl-shut-down.sh
+```
 # Deploy and provision Fineract CN using Docker and Docker-compose
 
 You can either deploy and provision Fineract CN automatically using bash scripts or manually using Postman.
@@ -42,38 +46,42 @@ You can either deploy and provision Fineract CN automatically using bash scripts
 # 1. Deploy and provision Fineract automatically using bash scripts
 
  - To start up all the Fineract CN services run:
-
-    `bash start-up.sh`
+```console
+bash start-up.sh
+```
  - Then log the last Fineract CN microservice deployed by docker compose (fineract-cn-notification) to make sure all your Fineract services are now available.
-
-    `docker logs -f fineract-cn-docker-compose_notifications-ms_1`
+```console
+docker logs -f fineract-cn-docker-compose_notifications-ms_1
+```
  - Finally provison the microservices by
-
-    `cd bash_scripts`
-
-    `bash provision.sh playground` # where playground is your tenant name
-
+```console
+cd bash_scripts
+bash provision.sh playground # where playground is your tenant name
+```
 ## 2. Deploy Fineract manually using postman
 
 ## Perquisites
 
 ### Generate .env file with RSA keys
-`java -cp external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar  org.apache.fineract.cn.lang.security.RsaKeyPairFactory UNIX > .env`
-
+```console
+java -cp external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar  org.apache.fineract.cn.lang.security.RsaKeyPairFactory UNIX > .env
+```
 This library is taken from [fineract-cn-lang](https://github.com/apache/fineract-cn-lang#generate-and-print-rsa-keys).
 
 If needed you can pull a fresh copy of it:
-`wget https://mifos.jfrog.io/mifos/libs-snapshot-local/org/apache/fineract/cn/lang/0.1.0-BUILD-SNAPSHOT/lang-0.1.0-BUILD-SNAPSHOT.jar external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar`
-
+```console
+wget https://mifos.jfrog.io/mifos/libs-snapshot-local/org/apache/fineract/cn/lang/0.1.0-BUILD-SNAPSHOT/lang-0.1.0-BUILD-SNAPSHOT.jar external_tools/lang-0.1.0-BUILD-SNAPSHOT.jar
+```
 ### Add other environment variables to the end of the .env file
-`cat env_variables >> .env`
-
+```console
+cat env_variables >> .env
+```
 If you run some service from localhost then [add these services to your hosts file](#use-the-postman-scripts-when-running-locally).
 
 ## Procedure
 
 ### Start external tools (database, cassandra, etc)
-```
+```console
 cd external_tools
 docker-compose up
 ```
@@ -81,7 +89,7 @@ docker-compose up
 ### Start micro services
 First only start provisioner-ms by running following in project root:
 
-```
+```console
 docker-compose up provisioner-ms
 ```
 after it has started (and created table seshat to Postgre database) you can start rest of the services.
@@ -92,7 +100,7 @@ In the docker-compose.yml (that resides in project root) there are more than 10 
 Running all services together consumes a lot of memory. So you can start a subset of services.
 
 For example you could start the following additional micro services and an fims-web-app:
-```
+```console
 docker-compose up rhythm-ms identity-ms customer-ms accounting-ms deposit-ms portfolio-ms office-ms teller-ms fims-web-app
 ```
 If you want you can add other micro services (listed in docker-compose.yml) to the list.
@@ -110,7 +118,7 @@ Instead demo_server we have Postman scripts and we use 'playground' as tenant na
 
 We provide a postman-request-collection as well as a postman-environment that defines variables that are used to hold values received in responses.
 Both files are located under [postman-initial-requests folder](postman_scripts):
-```
+```console
 postman_scripts/Fineract-Cn-Initial-Requests.postman_collection.json
 postman_scripts/Fineract-Cn-Initial-Setup-Environment.postman_environment.json
 ```
@@ -125,7 +133,7 @@ Initialize Postman as follows:
 
 The first request will retrieve a token. The response should look like this, with a different token:
 
-```
+```json
 {
     "token": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJhdWQiOiJwcm92aXNpb25lci12MSIsInN1YiI6IndlcGVtbmVmcmV0IiwiL21pZm9zLmlvL3NpZ25hdHVyZVRpbWVzdGFtcCI6IjIwMTctMDQtMThUMDlfNDRfMjIiLCIvbWlmb3MuaW8vdG9rZW5Db250ZW50IjoiUk9MRV9BRE1JTiIsImlzcyI6InN5c3RlbSIsImlhdCI6MTUwMDA1NjgxNywiZXhwIjoxNTAwNDE2ODE3fQ.OfxTUTStJbKQc4rAPW5PLIQYNjCG_uqcNPR4up6pIQBWLDxkgEiU9EF1WrB5NQdzXBJIHqjDFQpaVywm5DersIh4LxPGD3MZj3TqZK5_LUcZvBDTa4Xgb41e3xXkWB4TkN6KqfmiK12Ngjrrj7qZGBdtypDmFmZwKQRZIOL6T3QbI7LpbPGpeWjpWZirFgtcn5B1Z_h3r9rirCzecUdVjlaplQufxDuVFJS0R3N67pyuGQENvCAC716ID5KbokTQtITXfjnCztFuQBbtCPcYLIzxsKv_-E5k6Gd0pv01OC0XpY3NSgfAolVVgvSXKoRnL3NwAMP2yuzX6i8hR_q82Q",
     "accessTokenExpiration": "2019-07-18T22:26:57.784"
@@ -144,9 +152,9 @@ Use the accounts_with_type.csv file found in postman_scripts and [follow the ins
 
 1. Check if the micro services to which the requests are made are up and running.
 Check the container for details of failures (if any):
-
+```console
 docker-compose logs provisioner-ms
-
+```
 2. Check that apps have registered with eureka: http://localhost:8761/
 
 3. Reach out to [mailing list](https://lists.apache.org/list.html?dev@fineract.apache.org) with the relevant details
@@ -162,7 +170,7 @@ Navigate to http://localhost:8888 in your browser and enter the credentials of t
 
 The following user-profile is available in fims-web-app after above setup was completed successfully:
 
-```
+```console
 tenant: playground
 user: mifos
 password: password
@@ -172,7 +180,7 @@ password: password
 Postman scripts use service names (postgres, provisioner-ms, etc) when referring to different services.
 If you want to use the same Postman scripts when running micro services locally then add into your hosts (/etc/hosts in Unix) file:
 
-```
+```console
 127.0.0.1 eureka
 127.0.0.1 postgres
 127.0.0.1 cassandra
@@ -196,9 +204,13 @@ If you want to use the same Postman scripts when running micro services locally 
 
 ### How to reset everything and start from scratch
 
-Run ./shut-down-and-reset.sh or
-
+Run 
+```console
+./shut-down-and-reset.sh 
 ```
+or
+
+```console
 cd external_tools
 docker-compose stop
 docker-compose rm
