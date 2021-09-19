@@ -1,0 +1,1578 @@
+{
+	"info": {
+		"_postman_id": "5b7143f2-d8a1-4ac7-93a7-d1a11e2952b5",
+		"name": "FinCN-NeoBank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. LOG IN TENANT ADMIN (operator)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"adminUserToken\", jsonData.accessToken);",
+							"",
+							"const moment = require('moment');",
+							"var timestamp = moment().format(\"YYYY-MM-DD\") + \"T\" + moment().format(\"HH:mm:ss\");",
+							"tests[\"password is not expired\"] = jsonData.passwordExpiration > timestamp;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=operator&password={{adminUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "operator"
+						},
+						{
+							"key": "password",
+							"value": "{{adminUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "01.1 PUT new  permissions to role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var CryptoJS = require(\"crypto-js\")",
+							"var rawStr = CryptoJS.enc.Utf8.parse(\"operatorPassword\")",
+							"var base64 = CryptoJS.enc.Base64.stringify(rawStr)",
+							"console.log(`operatorPassword in BASE64: ${base64}`)",
+							"postman.setEnvironmentVariable(\"adminUserPassword\", base64);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identifier\": \"administrator\",\n    \"permissions\": [\n        {\n            \"permittableEndpointGroupIdentifier\": \"teller__v1__management\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"deposit__v1__instance\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"customer__v1__portrait\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"identity__v1__users\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"customer__v1__customer\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"identity__v1__self\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"customer__v1__identifications\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__ledger\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__journal\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products__enable\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__account\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"catalog__v1__catalog\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"customer__v1__documents\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"office__v1__offices\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__income_stmt\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"portfolio__v1__case\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__tx_types\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"customer__v1__task\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"portfolio__v1__products__lossprv\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"teller__v1__operation\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"accounting__v1__fin_condition\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"office__v1__self\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"office__v1__employees\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"portfolio__v1__case_documents\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"deposit__v1__definition\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"identity__v1__roles\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"deposit__v1__transaction\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"deposit__v1__subtxn\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        },\n        {\n            \"permittableEndpointGroupIdentifier\": \"deposit__v1__collection\",\n            \"allowedOperations\": [\n                \"READ\",\n                \"DELETE\",\n                \"CHANGE\"\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/roles/administrator",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"roles",
+						"administrator"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "01.03 Keycloak Auth",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "fineractCN",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "operator",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "operatorPassword",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8180/auth/realms/fineract/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"auth",
+						"realms",
+						"fineract",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "01.2 LOG IN TENANT ADMIN (operator)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"adminUserToken\", jsonData.accessToken);",
+							"",
+							"const moment = require('moment');",
+							"var timestamp = moment().format(\"YYYY-MM-DD\") + \"T\" + moment().format(\"HH:mm:ss\");",
+							"tests[\"password is not expired\"] = jsonData.passwordExpiration > timestamp;",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "http://{{identityUrl}}/identity/v1/token?grant_type=password&username=operator&password={{adminUserPassword}}",
+					"protocol": "http",
+					"host": [
+						"{{identityUrl}}"
+					],
+					"path": [
+						"identity",
+						"v1",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "password"
+						},
+						{
+							"key": "username",
+							"value": "operator"
+						},
+						{
+							"key": "password",
+							"value": "{{adminUserPassword}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02. Get Savings Products",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/definitions/",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"definitions",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.01.Create customer-Person",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productIdentifier\" : \"savingsProduct004\",\n    \"accountNumber\" : \"99332223423443\",\n    \"isActive\": true\n}"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/person",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"person"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03.02.Create customer-Non Person",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productIdentifier\" : \"savingsProduct004\",\n    \"accountNumber\" : \"99332223423447\",\n    \"isActive\" : true\n}"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/nonperson",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"nonperson"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04.01.Activate customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"action\": \"ACTIVATE\"\n}"
+				},
+				"url": {
+					"raw": "http://{{customerUrl}}/customer/v1/customers/customer1/commands",
+					"protocol": "http",
+					"host": [
+						"{{customerUrl}}"
+					],
+					"path": [
+						"customer",
+						"v1",
+						"customers",
+						"customer1",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04.02. Activate savings Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/99332223423445?command=ACTIVATE",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"99332223423445"
+					],
+					"query": [
+						{
+							"key": "command",
+							"value": "ACTIVATE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05. Create Sub Txn Type",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"identifier\" : \"Test\",\n    \"name\" : \"Test1\",\n    \"description\": \"for testing the feature\",\n    \"cashPayment\": false,\n    \"active\" : true,\n    \"orderPosition\": 0,\n    \"tranType\" : 0,\n    \"ledgerAccount\": \"7013\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/subtxntype",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"subtxntype"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.6.01. DEPOSIT to Savings Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"99332223423443\",\n    \"requestCode\": \"qereqwe\",\n    \"routingCode\": \"erqeqwe\",\n    \"externalId\": \"reqeqwe\",\n    \"note\": \"note\",\n    \"amount\": {\n        \"amount\": 100,\n        \"currency\": \"EUR\"\n    }\n    , \"subTxnId\": \"Non Cash\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/transaction?action=DEPOSIT",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"transaction"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "DEPOSIT"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.6.01. DEPOSIT to Savings Account Runner",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"{{accountId}}\",\n    \"requestCode\": \"{{requestCode}}\",\n    \"routingCode\": \"{{routingCode}}\",\n    \"externalId\": \"{{externalId}}\",\n    \"note\": \"{{note}}\",\n    \"amount\": {\n        \"amount\": {{amount}},\n        \"currency\": \"EUR\"\n    }\n    , \"subTxnId\": \"Non Cash\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/transaction?action=DEPOSIT",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"transaction"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "DEPOSIT"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.6.02. WITHDRAWAL from Savings Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\": \"99332223423443\",\n    \"requestCode\": \"qereqwe\",\n    \"routingCode\": \"erqeqwe\",\n    \"externalId\": \"reqeqwe\",\n    \"note\": \"note\",\n    \"amount\": {\n        \"amount\": 100,\n        \"currency\": \"EUR\"\n    }\n    , \"subTxnId\": \"Non Cash\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/transaction?action=WITHDRAWAL",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"transaction"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "WITHDRAWAL"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0.6.03. TRANSFER from Savings Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fromAccountId\": \"99332223423443\",\n    \"toAccountId\": \"99332223423447\",\n    \"requestCode\": \"qereqwe\",\n    \"routingCode\": \"erqeqwe\",\n    \"externalId\": \"reqeqwe\",\n    \"note\": \"note\",\n    \"amount\": {\n        \"amount\": 100,\n        \"currency\": \"EUR\"\n    }\n    , \"subTxnId\": \"Non Cash\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/transaction?action=TRANSFER",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"transaction"
+					],
+					"query": [
+						{
+							"key": "action",
+							"value": "TRANSFER"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07.01 Create Collection",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"txnDate\": \"2021-January-21\",\n  \"amount\": \"500.00\",\n  \"currency\": \"ZAR\",\n  \"remarks\": \"\",\n  \"accountId\": \"99332223423443\",\n  \"subtxnId\": \"Cash Deposit\",\n  \"fee\" : \"20.00\",\n  \"individualPayments\": [\n    {\n      \"accountNumber\": \"13143123324\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"56754312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"097864312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n\n      \"accountNumber\": \"345344312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"34534612323123\",\n      \"amount\": \"100.00\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/collection",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"collection"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "07.01 Create Collection",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{adminUserToken}}"
+							},
+							{
+								"key": "User",
+								"value": "{{adminUser}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Identifier",
+								"value": "{{tenantIdentifier}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"txnDate\": \"2021-January-21\",\n  \"amount\": \"500.00\",\n  \"currency\": \"ZAR\",\n  \"remarks\": \"\",\n  \"accountId\": \"99332223423443\",\n  \"subtxnId\": \"Cash Deposit\",\n  \"fee\" : \"20.00\",\n  \"individualPayments\": [\n    {\n      \"accountNumber\": \"13143123324\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"56754312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"097864312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n\n      \"accountNumber\": \"345344312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"accountNumber\": \"34534612323123\",\n      \"amount\": \"100.00\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{depositUrl}}/deposit/v1/collection",
+							"protocol": "http",
+							"host": [
+								"{{depositUrl}}"
+							],
+							"path": [
+								"deposit",
+								"v1",
+								"collection"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 27 Apr 2021 16:59:02 GMT"
+						},
+						{
+							"key": "X-Application-Context",
+							"value": "deposit-v1:2027"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"ac7c0a7c-db01-464b-a4a4-b9cf24e7d948\",\n    \"token\": \"327611\",\n    \"tokenExpiresBy\": \"2021-April-29 04:59:02\",\n    \"individualPayments\": [\n        {\n            \"accountNumber\": \"097864312323123\",\n            \"amount\": 100,\n            \"reference\": \"e31f0472-4d39-48b1-9762-5bd54f0a3227\",\n            \"token\": \"544442\",\n            \"tokenExpiresBy\": \"2021-April-29 04:59:02\"\n        },\n        {\n            \"accountNumber\": \"56754312323123\",\n            \"amount\": 100,\n            \"reference\": \"6f0ded2e-1f9c-498d-9e47-cd445e3d29f9\",\n            \"token\": \"484153\",\n            \"tokenExpiresBy\": \"2021-April-29 04:59:02\"\n        },\n        {\n            \"accountNumber\": \"13143123324\",\n            \"amount\": 100,\n            \"reference\": \"6bb8daea-be23-4d36-8c6d-11a91ef68717\",\n            \"token\": \"480102\",\n            \"tokenExpiresBy\": \"2021-April-29 04:59:02\"\n        },\n        {\n            \"accountNumber\": \"34534612323123\",\n            \"amount\": 100,\n            \"reference\": \"a0cd31ae-640d-4b82-8c96-07249f07299e\",\n            \"token\": \"634926\",\n            \"tokenExpiresBy\": \"2021-April-29 04:59:02\"\n        },\n        {\n            \"accountNumber\": \"345344312323123\",\n            \"amount\": 100,\n            \"reference\": \"5aaa9716-b987-48ec-b9ea-b14d61d4e22a\",\n            \"token\": \"801002\",\n            \"tokenExpiresBy\": \"2021-April-29 04:59:02\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "07. 02 Update Collection API",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"individualPayments\": [\n    {\n      \"accountNumber\": \"13143123324\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n      \"accountNumber\": \"56754312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n      \"accountNumber\": \"097864312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n\n      \"accountNumber\": \"345344312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"ABSENT\"\n    },\n    {\n      \"accountNumber\": \"34534612323123\",\n      \"amount\": \"50.00\",\n      \"attendance\":\"PRESENT\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/collection/81cbeaed-c6f6-48e2-8068-c5f350727cc9",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"collection",
+						"81cbeaed-c6f6-48e2-8068-c5f350727cc9"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "07. 02 Update Collection API",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{adminUserToken}}"
+							},
+							{
+								"key": "User",
+								"value": "{{adminUser}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Identifier",
+								"value": "{{tenantIdentifier}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"individualPayments\": [\n    {\n      \"accountNumber\": \"13143123324\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n      \"accountNumber\": \"56754312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n      \"accountNumber\": \"097864312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"PRESENT\"\n    },\n    {\n\n      \"accountNumber\": \"345344312323123\",\n      \"amount\": \"100.00\",\n      \"attendance\":\"ABSENT\"\n    },\n    {\n      \"accountNumber\": \"34534612323123\",\n      \"amount\": \"50.00\",\n      \"attendance\":\"PRESENT\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{depositUrl}}/deposit/v1/collection/81cbeaed-c6f6-48e2-8068-c5f350727cc9",
+							"protocol": "http",
+							"host": [
+								"{{depositUrl}}"
+							],
+							"path": [
+								"deposit",
+								"v1",
+								"collection",
+								"81cbeaed-c6f6-48e2-8068-c5f350727cc9"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 27 Apr 2021 16:58:22 GMT"
+						},
+						{
+							"key": "X-Application-Context",
+							"value": "deposit-v1:2027"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"81cbeaed-c6f6-48e2-8068-c5f350727cc9\",\n    \"token\": \"131478\",\n    \"tokenExpiresBy\": \"2021-April-29 04:18:13\",\n    \"individualPayments\": [\n        {\n            \"accountNumber\": \"34534612323123\",\n            \"amount\": 50,\n            \"attendance\": \"PRESENT\",\n            \"reference\": \"f3b81aaa-bb5f-4500-816d-e90e56cea31c\",\n            \"token\": \"184254\",\n            \"tokenExpiresBy\": \"2021-April-29 04:18:13\"\n        },\n        {\n            \"accountNumber\": \"56754312323123\",\n            \"amount\": 100,\n            \"attendance\": \"PRESENT\",\n            \"reference\": \"925d47e5-a723-4fb3-a063-6fd2c0371056\",\n            \"token\": \"391340\",\n            \"tokenExpiresBy\": \"2021-April-29 04:18:13\"\n        },\n        {\n            \"accountNumber\": \"345344312323123\",\n            \"amount\": 100,\n            \"attendance\": \"ABSENT\",\n            \"reference\": \"e3b307b4-3256-4154-90a0-a55e7bee96d2\",\n            \"token\": \"994467\",\n            \"tokenExpiresBy\": \"2021-April-29 04:18:13\"\n        },\n        {\n            \"accountNumber\": \"097864312323123\",\n            \"amount\": 100,\n            \"attendance\": \"PRESENT\",\n            \"reference\": \"02752937-76e4-48da-ae99-d97453a1216f\",\n            \"token\": \"071743\",\n            \"tokenExpiresBy\": \"2021-April-29 04:18:13\"\n        },\n        {\n            \"accountNumber\": \"13143123324\",\n            \"amount\": 100,\n            \"attendance\": \"PRESENT\",\n            \"reference\": \"7b1ae470-e024-427d-892b-3bec7e37cf04\",\n            \"token\": \"824149\",\n            \"tokenExpiresBy\": \"2021-April-29 04:18:13\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "07.03 Fetch Collections",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/collection/81cbeaed-c6f6-48e2-8068-c5f350727cc9",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"collection",
+						"81cbeaed-c6f6-48e2-8068-c5f350727cc9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08. Statement API",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/99332223423443/statement?fromDate=04.08.2021&toDate=06.08.2021",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"99332223423443",
+						"statement"
+					],
+					"query": [
+						{
+							"key": "fromDate",
+							"value": "04.08.2021"
+						},
+						{
+							"key": "toDate",
+							"value": "06.08.2021"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "07. Collection API",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{adminUserToken}}"
+							},
+							{
+								"key": "User",
+								"value": "{{adminUser}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Identifier",
+								"value": "{{tenantIdentifier}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"txnDate\": \"2021-January-21\",\n  \"amount\": \"500.00\",\n  \"currency\": \"ZAR\",\n  \"remarks\": \"\",\n  \"accountId\": \"2323423343453454\",\n  \"subtxnId\": \"Cash Deposit\",\n  \"fee\" : \"20.00\",\n  \"payment\": [\n    {\n      \"IBAN\": \"13143123324\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"56754312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"097864312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n\n      \"IBAN\": \"345344312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"34534612323123\",\n      \"amount\": \"100.00\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{depositUrl}}/deposit/v1/collection",
+							"protocol": "http",
+							"host": [
+								"{{depositUrl}}"
+							],
+							"path": [
+								"deposit",
+								"v1",
+								"collection"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\n  \"reference\": \"aqsasdas-asdasdq-afrwewe-12123\",\n  \"token\": \"372813\",\n  \"tokenExpiresBy\" : \"2021-January-26\"\n  \n}"
+				}
+			]
+		},
+		{
+			"name": "09. Balance API",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{depositUrl}}/deposit/v1/instances/99332223423443/balance",
+					"protocol": "http",
+					"host": [
+						"{{depositUrl}}"
+					],
+					"path": [
+						"deposit",
+						"v1",
+						"instances",
+						"99332223423443",
+						"balance"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "07. Collection API",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{adminUserToken}}"
+							},
+							{
+								"key": "User",
+								"value": "{{adminUser}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Identifier",
+								"value": "{{tenantIdentifier}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"txnDate\": \"2021-January-21\",\n  \"amount\": \"500.00\",\n  \"currency\": \"ZAR\",\n  \"remarks\": \"\",\n  \"accountId\": \"2323423343453454\",\n  \"subtxnId\": \"Cash Deposit\",\n  \"fee\" : \"20.00\",\n  \"payment\": [\n    {\n      \"IBAN\": \"13143123324\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"56754312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"097864312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n\n      \"IBAN\": \"345344312323123\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"IBAN\": \"34534612323123\",\n      \"amount\": \"100.00\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{depositUrl}}/deposit/v1/collection",
+							"protocol": "http",
+							"host": [
+								"{{depositUrl}}"
+							],
+							"path": [
+								"deposit",
+								"v1",
+								"collection"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\n  \"reference\": \"aqsasdas-asdasdq-afrwewe-12123\",\n  \"token\": \"372813\",\n  \"tokenExpiresBy\" : \"2021-January-26\"\n  \n}"
+				},
+				{
+					"name": "09. Balance API",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{adminUserToken}}"
+							},
+							{
+								"key": "User",
+								"value": "{{adminUser}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Tenant-Identifier",
+								"value": "{{tenantIdentifier}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{depositUrl}}/deposit/v1/instances/99332223423447/balance",
+							"protocol": "http",
+							"host": [
+								"{{depositUrl}}"
+							],
+							"path": [
+								"deposit",
+								"v1",
+								"instances",
+								"99332223423447",
+								"balance"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 16 Feb 2021 08:28:21 GMT"
+						},
+						{
+							"key": "X-Application-Context",
+							"value": "deposit-v1:2027"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"balance\": 10000,\n    \"interest\": 25.23,\n    \"ibb\" : 10025.23\n}"
+				}
+			]
+		},
+		{
+			"name": "10. Trial Balance API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"There are 84 accounts\"] =  jsonData.totalElements === 84;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/trialbalance?includeEmptyEntries=true",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"trialbalance"
+					],
+					"query": [
+						{
+							"key": "includeEmptyEntries",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11. Search Jouranal Entries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"There are 84 accounts\"] =  jsonData.totalElements === 84;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}"
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/journal?dateRange=2020-06-01Z00.00.00..2021-03-31Z00.00.00 &account=8001&amount=100",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"journal"
+					],
+					"query": [
+						{
+							"key": "dateRange",
+							"value": "2020-06-01Z00.00.00..2021-03-31Z00.00.00 "
+						},
+						{
+							"key": "account",
+							"value": "8001"
+						},
+						{
+							"key": "amount",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
