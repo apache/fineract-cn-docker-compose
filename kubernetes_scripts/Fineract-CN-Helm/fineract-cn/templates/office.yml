@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: office-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: office-ms
+  ports:
+    - port: 2023
+      targetPort: 2023
+  # type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: office-ms-cluster
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: office-ms
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: office-ms
+    spec:
+      containers:
+      - name: office-ms
+        image: {{ .Values.office.image }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: external-tools-config
+          - configMapRef:
+              name: fineract-service-config
+        env:
+          - name: eureka.instance.hostname
+            value: office-ms
+          - name: server.port
+            value: "2023"
+          - name: spring.application.name
+            value:  office-v1
+          - name: system.publicKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_MODULUS
+                name: secret-config
+          - name: system.publicKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_EXPONENT
+                name: secret-config
+          - name: system.publicKey.timestamp
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_TIMESTAMP
+                name: secret-config
+          - name: system.privateKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_MODULUS
+                name: secret-config
+          - name: system.privateKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_EXPONENT
+                name: secret-config
+        ports:
+          - containerPort: 2023

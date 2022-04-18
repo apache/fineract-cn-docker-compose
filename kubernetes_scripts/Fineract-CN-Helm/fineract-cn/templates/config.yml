@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fineract-service-config
+  namespace: {{ .Values.namespace }}
+data:
+  bonecp.acquireIncrement: "1" #Might be absent for identity
+  bonecp.maxConnectionsPerPartition: "4" #Might be absent for identity
+  bonecp.minConnectionsPerPartition: "1" #Might be absent for identity
+  bonecp.partitionCount: "1" #Might be absent for identity
+  cassandra.cl.delete: ONE
+  cassandra.cl.read: ONE
+  cassandra.cl.write: ONE
+  cassandra.cluster.pwd: password
+  cassandra.cluster.user: cassandra
+  cassandra.clusterName: datacenter1
+  cassandra.keyspace: seshat
+  eureka.client.fetchRegistry: "true"
+  eureka.client.initialInstanceInfoReplicationIntervalSeconds: "25"
+  eureka.client.instanceInfoReplicationIntervalSeconds: "20"
+  eureka.instance.leaseRenewalIntervalInSeconds: "20"
+  eureka.registration.enabled: "true"
+  feign.hystrix.enabled: "false"
+  postgresql.database: seshat #Might be absent for identity
+  ribbon.eureka.enabled: "true"
+  server.max-http-header-size: "16384"
+  spring.cloud.config.enabled: "false"
+  spring.cloud.discovery.enabled: "true"
+  keycloak.enabled: "true"
+  authentication.service.keycloak: "true"
+  authentication.service.anubis: "false"
+  keycloak.auth-server-url: "https://localhost:8180/auth"
+  keycloak.ssl-required: "external"
+  keycloak.confidential-port: "443"
+  keycloak.realm: "keycloak-realm"
+  keycloak.resource: "kecloak-client"
+  keycloak.public-client: "true"
+  keycloak.principal-attribute: "preferred_username"
+  keycloak.bearer-only: "true"
+  conf.enableAccountLevelAccessVerification: "false"
+  fin.keycloak.realm.publicKey: "keycloak-rsa-public-key"
+  keycloak.use-resource-role-mappings: "true"

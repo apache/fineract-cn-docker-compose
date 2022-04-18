@@ -1,0 +1,51 @@
+namespace: "fineract-cn"
+accounting:
+  image: "apache/fineract-cn-accounting:latest"
+
+activemq:
+  image: "docker.io/rmohr/activemq:5.14.5"
+
+cassandra:
+  image: "docker.io/cassandra:3.11"
+
+cheques:
+  image: "apache/fineract-cn-cheques:latest"
+
+customer:
+  image: "apache/fineract-cn-customer:latest"
+
+deposit:
+  image: "apache/fineract-cn-deposit-account-management:latest"
+
+eureka:
+  image: "docker.io/anh3h/eureka-server:latest"
+
+group:
+  image: "apache/fineract-cn-group:latest"
+
+identity:
+  image: "apache/fineract-cn-identity:latest"
+
+notifications:
+  image: "apache/fineract-cn-notifications:latest"
+
+office:
+  image: "apache/fineract-cn-office:latest"
+
+payroll:
+  image: "apache/fineract-cn-payroll:latest"
+
+portfolio:
+  image: "apache/fineract-cn-portfolio:latest"
+
+provisioner:
+  image: "apache/fineract-cn-provisioner:latest"
+
+reporting:
+  image: "apache/fineract-cn-reporting:latest"
+
+rhythm:
+  image: "apache/fineract-cn-rhythm:latest"
+
+teller:
+  image: "apache/fineract-cn-teller:latest"

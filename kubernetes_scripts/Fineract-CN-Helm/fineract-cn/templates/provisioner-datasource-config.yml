@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: provisioner-datasource-config
+  namespace: {{ .Values.namespace }}
+data:
+    spring.datasource.url: jdbc:postgresql://postgresdb-cluster:5432/seshat
