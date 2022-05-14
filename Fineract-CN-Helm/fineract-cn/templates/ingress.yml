@@ -1,0 +1,113 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fineract-cn-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.allow-http: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: HTTP
+spec:
+  rules:
+  - host: "3813e012-us-east.lb.appdomain.cloud"
+    http:
+      paths:
+      - path: /provisioner/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: provisioner-service
+            port:
+              number: 2020          
+      - path: /identity/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: identity-service
+            port:
+              number: 2021
+      - path: /deposit/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: deposit-service
+            port:
+              number: 2027
+      - path: /accounting/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: accounting-service
+            port:
+              number: 2025             
+      - path: /rhythm/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: rhythm-service
+            port:
+              number: 2022
+      - path: /office/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: office-service
+            port:
+              number: 2023
+      - path: /customer/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: customer-service
+            port:
+              number: 2024
+      - path: /portfolio/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: portfolio-service
+            port:
+              number: 2026
+      - path: /teller/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: teller-service
+            port:
+              number: 2028
+      - path: /reporting/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: reporting-service
+            port:
+              number: 2029
+      - path: /cheques/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: cheques-service
+            port:
+              number: 2029
+      - path: /payroll/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: payroll-service
+            port:
+              number: 2031
+      - path: /group/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: group-service
+            port:
+              number: 2032
+      - path: /notification/v1/
+        pathType: Prefix
+        backend:
+          service:
+            name: notifications-service
+            port:
+              number: 2033
+

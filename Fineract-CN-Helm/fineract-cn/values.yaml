@@ -1,0 +1,51 @@
+namespace: "fineract-cn"
+accounting:
+  image: "benura123/accounting:v1.0.1"
+
+activemq:
+  image: "docker.io/rmohr/activemq:5.14.5"
+
+cassandra:
+  image: "docker.io/cassandra:3.11"
+
+# cheques:
+#   image: "apache/fineract-cn-cheques:latest"
+
+customer:
+  image: "benura123/customer:v1.0.2"
+
+deposit:
+  image: "benura123/deposit:v1.0.1"
+
+# eureka:
+#   image: "docker.io/anh3h/eureka-server:latest"
+
+group:
+  image: "benura123/group:v1.0.2"
+
+identity:
+  image: "benura123/identity:v1.0.1"
+
+notifications:
+  image: "benura123/notification:v1.0.1"
+
+office:
+  image: "benura123/office:v1.0.2"
+
+payroll:
+  image: "benura123/payroll:v1.0.1"
+
+portfolio:
+  image: "benura123/portfolio:v1.0.2"
+
+provisioner:
+  image: "benura123/provisioner:v1.0.0"
+
+reporting:
+  image: "benura123/reporting:v1.0.1"
+
+rhythm:
+  image: "benura123/rhythm:v1.0.2"
+
+teller:
+  image: "benura123/teller:v1.0.1"
