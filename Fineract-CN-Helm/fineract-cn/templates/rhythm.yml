@@ -43,8 +43,12 @@ spec:
           - configMapRef:
               name: fineract-service-config
         env:
-          - name: eureka.instance.hostname
-            value: rhythm-ms
+          - name: kubernetes.rhythm.service.name
+            value: rhythm-service
+          - name: kubernetes.identity.service.name
+            value: identity-service
+          - name: kubernetes.identity.service.port
+            value: "2021"
           - name: server.port
             value: "2022"
           - name: spring.application.name

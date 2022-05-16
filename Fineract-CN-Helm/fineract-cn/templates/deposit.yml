@@ -43,8 +43,8 @@ spec:
           - configMapRef:
               name: fineract-service-config
         env:
-          - name: eureka.instance.hostname
-            value: deposit-ms
+          - name: kubernetes.service.name
+            value: deposit-service
           - name: server.port
             value: "2027"
           - name: spring.application.name

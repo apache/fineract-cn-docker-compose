@@ -45,8 +45,8 @@ spec:
           - configMapRef:
               name: provisioner-datasource-config
         env:
-          - name: eureka.instance.hostname
-            value: provisioner-ms
+          - name: kubernetes.service.name
+            value: provisioner-service
           - name: server.port
             value: "2020"
           - name: spring.application.name

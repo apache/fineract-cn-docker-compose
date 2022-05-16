@@ -43,8 +43,8 @@ spec:
           - configMapRef:
               name: fineract-service-config
         env:
-          - name: eureka.instance.hostname
-            value: portfolio-ms
+          - name: kubernetes.service.name
+            value: portfolio-service
           - name: server.port
             value: "2026"
           - name: spring.application.name

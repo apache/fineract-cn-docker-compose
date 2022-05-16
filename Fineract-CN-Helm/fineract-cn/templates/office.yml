@@ -43,8 +43,8 @@ spec:
           - configMapRef:
               name: fineract-service-config
         env:
-          - name: eureka.instance.hostname
-            value: office-ms
+          - name: kubernetes.service.name
+            value: office-service
           - name: server.port
             value: "2023"
           - name: spring.application.name

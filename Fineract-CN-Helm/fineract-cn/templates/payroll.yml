@@ -43,8 +43,8 @@ spec:
           - configMapRef:
               name: fineract-service-config
         env:
-          - name: eureka.instance.hostname
-            value: payroll-ms
+          - name: kubernetes.service.name
+            value: payroll-service
           - name: server.port
             value: "2031"
           - name: spring.application.name

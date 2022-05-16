@@ -3,11 +3,11 @@ entries:
   fineract-cn:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2022-05-14T23:08:13.754714438+05:30"
+    created: "2022-05-16T09:44:01.671739372+05:30"
     description: Fineract CN
-    digest: 01805680289b8747c07d78bb5294669f982bb8da87fed1f377a91cb781c88c89
+    digest: 2d8e74c692755909f0609bbe734905ed4e2a0742503d7e41c799c128abc169c3
     name: fineract-cn
     urls:
     - fineract-cn-1.0.0-SNAPSHOT.tgz
     version: 1.0.0-SNAPSHOT
-generated: "2022-05-14T23:08:13.740743937+05:30"
+generated: "2022-05-16T09:44:01.668375322+05:30"
