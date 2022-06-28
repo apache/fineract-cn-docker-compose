@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rhythm-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: rhythm-ms
+  ports:
+    - port: 2022
+      targetPort: 2022
+  # type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhythm-ms-cluster
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rhythm-ms
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: rhythm-ms
+    spec:
+      containers:
+      - name: rhythm-ms
+        image: {{ .Values.rhythm.image }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: external-tools-config
+          - configMapRef:
+              name: fineract-service-config
+        env:
+          - name: kubernetes.rhythm.service.name
+            value: rhythm-service
+          - name: kubernetes.identity.service.name
+            value: identity-service
+          - name: kubernetes.identity.service.port
+            value: "2021"
+          - name: server.port
+            value: "2022"
+          - name: spring.application.name
+            value: rhythm-v1
+          - name: rhythm.beatCheckRate
+            value: "600000"
+          - name: rhythm.user
+            value: "imhotep"
+          - name: system.publicKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_MODULUS
+                name: secret-config
+          - name: system.publicKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_EXPONENT
+                name: secret-config
+          - name: system.publicKey.timestamp
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_TIMESTAMP
+                name: secret-config
+          - name: system.privateKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_MODULUS
+                name: secret-config
+          - name: system.privateKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_EXPONENT
+                name: secret-config
+        ports:
+          - containerPort: 2022

@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: deposit-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: deposit-ms
+  ports:
+    - port: 2027
+      targetPort: 2027
+  # type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deposit-ms-cluster
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deposit-ms
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: deposit-ms
+    spec:
+      containers:
+      - name: deposit-ms
+        image: {{ .Values.deposit.image }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: external-tools-config
+          - configMapRef:
+              name: fineract-service-config
+        env:
+          - name: kubernetes.service.name
+            value: deposit-service
+          - name: server.port
+            value: "2027"
+          - name: spring.application.name
+            value: deposit-v1
+          - name: system.publicKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_MODULUS
+                name: secret-config
+          - name: system.publicKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_EXPONENT
+                name: secret-config
+          - name: system.publicKey.timestamp
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_TIMESTAMP
+                name: secret-config
+          - name: system.privateKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_MODULUS
+                name: secret-config
+          - name: system.privateKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_EXPONENT
+                name: secret-config
+        ports:
+          - containerPort: 2027
