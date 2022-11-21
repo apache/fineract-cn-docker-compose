@@ -36,7 +36,7 @@ spec:
       containers:
       - name: reporting-ms
         image: {{ .Values.reporting.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config

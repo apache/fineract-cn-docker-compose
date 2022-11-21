@@ -36,7 +36,7 @@ spec:
       containers:
       - name: identity-ms
         image: {{ .Values.identity.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config

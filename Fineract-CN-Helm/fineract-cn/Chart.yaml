@@ -5,6 +5,6 @@ name: fineract-cn
 version: 1.0.0-SNAPSHOT
 dependencies:
 - name: postgresql
-  version: 9.5
+  version: 11.9.5
   repository: "https://charts.bitnami.com/bitnami"
   alias: postgres

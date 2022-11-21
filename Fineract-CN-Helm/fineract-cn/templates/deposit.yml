@@ -36,7 +36,7 @@ spec:
       containers:
       - name: deposit-ms
         image: {{ .Values.deposit.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config

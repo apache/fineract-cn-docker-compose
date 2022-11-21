@@ -25,7 +25,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
+    limits:
+      cpu: "500m"
 
 ---
 
@@ -66,7 +68,7 @@ spec:
     spec:
       containers:
         - image: postgres:9.5
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: postgres
           ports:
             - containerPort: 5432

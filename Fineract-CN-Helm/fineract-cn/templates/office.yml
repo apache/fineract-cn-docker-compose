@@ -36,7 +36,7 @@ spec:
       containers:
       - name: office-ms
         image: {{ .Values.office.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config

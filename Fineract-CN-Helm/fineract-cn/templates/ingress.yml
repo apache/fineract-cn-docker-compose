@@ -110,4 +110,3 @@ spec:
             name: notifications-service
             port:
               number: 2033
-
