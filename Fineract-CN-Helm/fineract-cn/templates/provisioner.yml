@@ -1,3 +1,4 @@
+{{- if .Values.provisioner.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,7 +37,14 @@ spec:
       containers:
       - name: provisioner-ms
         image: {{ .Values.provisioner.image }}
-        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "{{ .Values.provisioner.limits.memory }}"
+            cpu: "{{ .Values.provisioner.limits.cpu }}"
+          requests:
+            memory: "{{ .Values.provisioner.requests.memory }}"
+            cpu: "{{ .Values.provisioner.requests.cpu }}"
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config
@@ -80,3 +88,4 @@ spec:
                 name: secret-config
         ports:
           - containerPort: 2020
+{{- end }}

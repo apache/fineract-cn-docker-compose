@@ -9,7 +9,7 @@ metadata:
     # nginx.ingress.kubernetes.io/backend-protocol: HTTP
 spec:
   rules:
-  - host: "3813e012-us-east.lb.appdomain.cloud"
+  - host: "fineract-cn.sandbox.fynarfin.io"
     http:
       paths:
       - path: /provisioner/v1/
@@ -110,4 +110,3 @@ spec:
             name: notifications-service
             port:
               number: 2033
-

@@ -1,0 +1,80 @@
+{{- if .Values.group.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: group-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: group-ms
+  ports:
+    - port: 2032
+      targetPort: 2032
+  # type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: group-ms-cluster
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: group-ms
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: group-ms
+    spec:
+      containers:
+      - name: group-ms
+        image: {{ .Values.group.image }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: external-tools-config
+          - configMapRef:
+              name: fineract-service-config
+        env:
+          - name: kubernetes.service.name
+            value: group-service
+          - name: server.port
+            value: "2032"
+          - name: spring.application.name
+            value: group-v1
+          - name: system.publicKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_MODULUS
+                name: secret-config
+          - name: system.publicKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_EXPONENT
+                name: secret-config
+          - name: system.publicKey.timestamp
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_TIMESTAMP
+                name: secret-config
+          - name: system.privateKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_MODULUS
+                name: secret-config
+          - name: system.privateKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_EXPONENT
+                name: secret-config
+        ports:
+          - containerPort: 2032
+{{- end }}

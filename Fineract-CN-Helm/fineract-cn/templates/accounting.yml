@@ -1,3 +1,4 @@
+{{- if .Values.accounting.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,7 +37,14 @@ spec:
       containers:
       - name: fineract-cn-accounting
         image: {{ .Values.accounting.image }}
-        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "{{ .Values.accounting.limits.memory }}"
+            cpu: "{{ .Values.accounting.limits.cpu }}"
+          requests:
+            memory: "{{ .Values.accounting.requests.memory }}"
+            cpu: "{{ .Values.accounting.requests.cpu }}"
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config
@@ -76,3 +84,4 @@ spec:
                 name: secret-config
         ports:
           - containerPort: 2025
+{{- end }}

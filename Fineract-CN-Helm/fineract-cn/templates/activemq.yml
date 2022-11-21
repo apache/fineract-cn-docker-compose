@@ -1,3 +1,4 @@
+{{- if .Values.activemq.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -40,7 +41,7 @@ spec:
     spec:
       containers:
         - image: {{ .Values.activemq.image }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: activemq
           ports:
             - containerPort: 61616
@@ -58,4 +59,4 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 60
             failureThreshold: 3
-
+{{- end }}
