@@ -1,0 +1,664 @@
+{
+	"info": {
+		"_postman_id": "fca30a54-4939-480e-9b9b-98658b847a1e",
+		"name": "Finceract-CN-Least-Initial-Requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20222524"
+	},
+	"item": [
+		{
+			"name": "03.1 Create first tenant 'playground'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.rootUserToken==='')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{rootUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{rootUser}}",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"identifier\": \"{{tenantIdentifier}}\",\n\t\"name\": \"Playground\",\n\t\"description\": \"Sample tenant for demonstrating Fineract-CN functionality\",\n\t\"cassandraConnectionInfo\": {\n\t\t\"clusterName\": \"datacenter1\",\n\t\t\"contactPoints\": \"cassandra:9042\",\n\t\t\"keyspace\": \"playground\",\n\t\t\"replicationType\": \"Simple\",\n\t\t\"replicas\": \"1\"\n\t},\n\t\"databaseConnectionInfo\": {\n\t\t\"driverClass\": \"org.postgresql.Driver\",\n\t\t\"databaseName\": \"playground\",\n\t\t\"host\": \"postgres\",\n\t\t\"port\": \"5432\",\n\t\t\"user\": \"postgres\",\n\t\t\"password\": \"postgres\"\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://{{provisionerUrl}}/provisioner/v1/tenants"
+			},
+			"response": []
+		},
+		{
+			"name": "Accounting initialize api",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.rootUserToken==='')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": "http://{{accountingUrl}}/accounting/v1/initialize"
+			},
+			"response": []
+		},
+		{
+			"name": "08.1 Create REVENUE ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.adminUserToken === '')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"REVENUE\",\n  \"identifier\": \"1000\",\n  \"name\": \"Income\",\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1100\",\n      \"name\": \"Income from Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1200\",\n      \"name\": \"Investment Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1300\",\n      \"name\": \"Fees and Charges\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1400\",\n      \"name\": \"Gain (Loss) on Sale of Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1500\",\n      \"name\": \"Miscellaneous Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1600\",\n      \"name\": \"Service Income on Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"REVENUE\",\n      \"identifier\": \"1700\",\n      \"name\": \"Trading Profits & Losses\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ],\n  \"showAccountsInChart\": true\n}\n\n"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers"
+			},
+			"response": []
+		},
+		{
+			"name": "08.2 Create EXPENSE Ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.adminUserToken === '')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"EXPENSE\",\n  \"identifier\": \"2000\",\n  \"name\": \"Expenses\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2100\",  \"name\": \"Employee Compensation\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2200\",  \"name\": \"Employee Benefits\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2300\",  \"name\": \"Travel and Conference Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2400\",  \"name\": \"Association Dues\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2500\",  \"name\": \"Office Occupancy Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2600\",  \"name\": \"Office Operations Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2700\",  \"name\": \"Educational and Promotional Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2800\",  \"name\": \"Loan Servicing Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"2900\",  \"name\": \"Professional and Outside Services\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3000\",  \"name\": \"Provision for Loan Losses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3100\",  \"name\": \"Member Insurance\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3220\",  \"name\": \"Federal Operating Fee\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3300\",  \"name\": \"Cash Over and Short\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3400\",  \"name\": \"Interest on Borrowed Money\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3550\",  \"name\": \"Annual Meeting Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3700\",  \"name\": \"Miscellaneous Operating Expenses\", \"subLedgers\": [], \"showAccountsInChart\": true },\n    {\"description\": null, \"type\": \"EXPENSE\", \"identifier\": \"3800\",  \"name\": \"Interest (Dividend) Expense\", \"subLedgers\": [], \"showAccountsInChart\": true }\n  ]\n}\n"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers"
+			},
+			"response": []
+		},
+		{
+			"name": "08.3 Create ASSETS ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.adminUserToken === '')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"ASSET\",\n  \"identifier\": \"7000\",\n  \"name\": \"Assets\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7010\",\n      \"name\": \"Loans to Members\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7020\",\n      \"name\": \"Lines of Credit to Members\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7030\",\n      \"name\": \"Real Estate Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7100\",\n      \"name\": \"Other Loans\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7200\",\n      \"name\": \"Other Receivables\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7300\",\n      \"name\": \"Cash Accounts\",\n      \"subLedgers\": [\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7310\",\n          \"name\": \"Bank account one\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        },\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7311\",\n          \"name\": \"Bank account two\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        },\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7350\",\n          \"name\": \"Change Fund\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        }\n      ],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7400\",\n      \"name\": \"Investments\",\n      \"subLedgers\": [\n        {\n          \"description\": null,\n          \"type\": \"ASSET\",\n          \"identifier\": \"7420\",\n          \"name\": \"Federal Agency Securities\",\n          \"subLedgers\": [],\n          \"showAccountsInChart\": true\n        }\n      ],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7500\",\n      \"name\": \"Investments—Investment Allowance\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7600\",\n      \"name\": \"Prepaid Expenses and Deferred Charges\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7700\",\n      \"name\": \"Fixed Assets\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7800\",\n      \"name\": \"Accrued Income\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"ASSET\",\n      \"identifier\": \"7900\",\n      \"name\": \"Other Assets\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers"
+			},
+			"response": []
+		},
+		{
+			"name": "08.4 Create LIABILITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.adminUserToken === '')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"LIABILITY\",\n  \"identifier\": \"8000\",\n  \"name\": \"Accounts Payable\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8100\",\n      \"name\": \"Accounts Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8200\",\n      \"name\": \"Interest Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8400\",\n      \"name\": \"Taxes Payable\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"LIABILITY\",\n      \"identifier\": \"8500\",\n      \"name\": \"Accrued Expenses\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n\n"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers"
+			},
+			"response": []
+		},
+		{
+			"name": "08.5 Create EQUITY ledgers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Access Token\",function(){",
+							"    if(pm.response.to.have.status(202)){",
+							"    (environment.adminUserToken === '')? console.log(\"API is running without Access Token\"): console.log(\"API is running with Access Token\");",
+							"    }",
+							"})",
+							"tests[\"Status code is 202\"] = responseCode.code === 202;",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"disabled": true
+					},
+					{
+						"key": "User",
+						"value": "{{adminUser}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": null,\n  \"type\": \"EQUITY\",\n  \"identifier\": \"9000\",\n  \"name\": \"Equity\",\n  \"showAccountsInChart\": true,\n  \"subLedgers\": [\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9100\",\n      \"name\": \"Member Savings\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9300\",\n      \"name\": \"Reserves\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9400\",\n      \"name\": \"Undivided Earnings\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9550\",\n      \"name\": \"Donated Equity\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    },\n    {\n      \"description\": null,\n      \"type\": \"EQUITY\",\n      \"identifier\": \"9560\",\n      \"name\": \"Net Income (Loss)\",\n      \"subLedgers\": [],\n      \"showAccountsInChart\": true\n    }\n  ]\n}\n"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers"
+			},
+			"response": []
+		},
+		{
+			"name": "08.6 Create An Account A",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"type\" : \"LIABILITY\",\n  \"identifier\" : \"8000\",\n  \"name\" : \"Interest Receivables\",\n  \"holders\" : [ \"First Holder\", \"Second Holder\" ],\n  \"signatureAuthorities\" : [ \"Second To Sign\", \"First To Sign\" ],\n  \"balance\" : 0.0,\n  \"ledger\" : \"8000\"\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/accounts"
+			},
+			"response": []
+		},
+		{
+			"name": "08.7 Create An Account B",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{adminUserToken}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"type\" : \"LIABILITY\",\n  \"identifier\" : \"8001\",\n  \"name\" : \"Interest Receivables\",\n  \"holders\" : [ \"First Holder\", \"Second Holder\" ],\n  \"signatureAuthorities\" : [ \"Second To Sign\", \"First To Sign\" ],\n  \"balance\" : 0.0,\n  \"ledger\" : \"8000\"\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/accounts"
+			},
+			"response": []
+		},
+		{
+			"name": "08.8 Create A Journal Entry",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transactionIdentifier\" : \"F14062036\",\n  \"transactionDate\" : \"2022-01-17T18:35:24.00Z\",\n  \"transactionType\" : \"ADBT\",\n  \"clerk\" : \"Boring Clerk\",\n  \"note\" : \"Account Db\",\n  \"debtors\" : [ {\n    \"accountNumber\" : \"8000\",\n    \"amount\" : \"200.0\"\n  } ],\n  \"creditors\" : [ {\n    \"accountNumber\" : \"8001\",\n    \"amount\" : \"200.0\"\n  } ],\n  \"message\" : \"Account Has Been Debited\"\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/journal"
+			},
+			"response": []
+		},
+		{
+			"name": "09.1 Find An Account A",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"accountABalance\", jsonData.balance);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"type\" : \"LIABILITY\",\n  \"identifier\" : \"8000\",\n  \"name\" : \"Receivables\",\n  \"holders\" : [ \"Holder One\", \"Holder Two\" ],\n  \"signatureAuthorities\" : [ \"Signatory Two\", \"Signatory One\" ],\n  \"balance\" : 906.4,\n  \"referenceAccount\" : \"1000\",\n  \"ledger\" : \"1001\"\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/accounts/8000"
+			},
+			"response": []
+		},
+		{
+			"name": "09.2 Find An Account B",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"accountBBalance\", jsonData.balance);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"type\" : \"LIABILITY\",\n  \"identifier\" : \"8000\",\n  \"name\" : \"Receivables\",\n  \"holders\" : [ \"Holder One\", \"Holder Two\" ],\n  \"signatureAuthorities\" : [ \"Signatory Two\", \"Signatory One\" ],\n  \"balance\" : 906.4,\n  \"referenceAccount\" : \"1000\",\n  \"ledger\" : \"1001\"\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/accounts/8001"
+			},
+			"response": []
+		},
+		{
+			"name": "09.3 Fetch Journal Entries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check for Account Balance\",function(){",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    var balanceInAccountA=parseInt(environment.accountABalance);",
+							"    var balanceInAccountB=parseInt(environment.accountBBalance);",
+							"    var balanceA=0; ",
+							"    var balanceB=0;  ",
+							"    jsonData.forEach(function(process){",
+							"        balanceA -= process.debtors[0].amount ",
+							"        balanceB = parseInt(balanceB) + parseInt(process.debtors[0].amount )",
+							"    })",
+							"    pm.expect(balanceInAccountA).eq(balanceA)",
+							"    pm.expect(balanceInAccountB).eq(balanceB) ",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{accountingUrl}}/accounting/v1/journal?dateRange=2022-01-10Z..2023-01-19Z&account=8001",
+					"protocol": "http",
+					"host": [
+						"{{accountingUrl}}"
+					],
+					"path": [
+						"accounting",
+						"v1",
+						"journal"
+					],
+					"query": [
+						{
+							"key": "dateRange",
+							"value": "2022-01-10Z..2023-01-19Z"
+						},
+						{
+							"key": "account",
+							"value": "8001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Accounts For Ledger",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accounts\": [\n        {\n            \"type\": \"LIABILITY\",\n            \"identifier\": \"6100.10\",\n            \"name\": \"First Account Of 6100\",\n            \"holders\": [\n                \"Holder One\"\n            ],\n            \"signatureAuthorities\": [\n                \"Signatory One\"\n            ],\n            \"balance\": 1234.0,\n            \"ledger\": \"8000\"\n        }\n    ],\n    \"totalPages\": 1,\n    \"totalElements\": 1\n}"
+				},
+				"url": "http://{{accountingUrl}}/accounting/v1/ledgers/8000/accounts"
+			},
+			"response": []
+		},
+		{
+			"name": "Find A Journal Entry",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"url": "http://{{accountingUrl}}/accounting/v1/journal/F14062018"
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Account Entries",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					},
+					{
+						"key": "X-Tenant-Identifier",
+						"value": "{{tenantIdentifier}}",
+						"type": "text"
+					}
+				],
+				"url": "http://{{accountingUrl}}/accounting/v1/accounts/8000/entries"
+			},
+			"response": []
+		}
+	]
+}
