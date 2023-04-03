@@ -36,7 +36,7 @@ spec:
       containers:
       - name: teller-ms
         image: {{ .Values.teller.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config

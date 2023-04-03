@@ -25,7 +25,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
+    limits:
+      cpu: "500m"
   # volumeName: cassandra-pv
 
 ---
@@ -67,7 +69,7 @@ spec:
     spec:
       containers:
         - image: {{ .Values.cassandra.image }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: cassandra
           ports:
             - containerPort: 9042
