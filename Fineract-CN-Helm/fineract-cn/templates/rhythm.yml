@@ -1,3 +1,4 @@
+{{- if .Values.rhythm.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,7 +37,7 @@ spec:
       containers:
       - name: rhythm-ms
         image: {{ .Values.rhythm.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config
@@ -84,3 +85,4 @@ spec:
                 name: secret-config
         ports:
           - containerPort: 2022
+{{- end }}

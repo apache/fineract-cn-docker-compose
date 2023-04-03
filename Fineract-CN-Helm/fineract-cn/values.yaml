@@ -1,51 +1,128 @@
 namespace: "fineract-cn"
 accounting:
-  image: "benura123/accounting:v1.0.1"
+  enabled: true
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn-accounting:latest"
+  limits:
+    cpu: "300m"
+    memory: 2Gi
+  requests:
+    cpu: "300m"
+    memory: 1Gi
 
 activemq:
+  enabled: true
   image: "docker.io/rmohr/activemq:5.14.5"
 
-cassandra:
-  image: "docker.io/cassandra:3.11"
+#postgres1:
+#  enabled: true
 
+postgres:
+  enabled: true
+  limits:
+    cpu: "200m"
+    memory: 1Gi
+  requests:
+    cpu: "200m"
+    memory: 800Mi
+#  initdbScripts:
+#    setup.sql: |-
+#      # create databases
+#      CREATE DATABASE IF NOT EXISTS `seshat1`;
+    
+
+#cassandra1:
+#  enabled: false
+#dbUser:
+#  user: cassandra
+#  forcePassword: true
+#  password: password
+
+cassandra:
+  enabled: true
+  fullnameOverride: cassandra-cluster
+  service:
+    ports:
+      cql: 9042
+    type: LoadBalancer
+  hostPorts:
+    cql: 9042
+#  image: "bitnami/cassandra"
+  dbUser:
+    user: cassandra
+    forcePassword: true
+    password: "password"
+#  initDBConfigMap: "cassandra-init-db"
+  resources:
+    limits:
+      cpu: 2
+      memory: 9Gi
+    requests:
+      cpu: 2
+      memory: 8Gi
+
+#  existingConfiguration: "fineract-service-config"
 # cheques:
 #   image: "apache/fineract-cn-cheques:latest"
 
 customer:
-  image: "benura123/customer:v1.0.2"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:customer"
 
 deposit:
-  image: "benura123/deposit:v1.0.1"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:deposit-account-management"
 
 # eureka:
 #   image: "docker.io/anh3h/eureka-server:latest"
 
 group:
-  image: "benura123/group:v1.0.2"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:group"
 
 identity:
-  image: "benura123/identity:v1.0.1"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn-identity:latest"
+  limits:
+    cpu: "300m"
+    memory: 2Gi
+  requests:
+    cpu: "300m"
+    memory: 1Gi
 
 notifications:
+  enabled: false
   image: "benura123/notification:v1.0.1"
 
 office:
-  image: "benura123/office:v1.0.2"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:office"
 
 payroll:
+  enabled: false
   image: "benura123/payroll:v1.0.1"
 
 portfolio:
-  image: "benura123/portfolio:v1.0.2"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:portfolio"
 
 provisioner:
-  image: "benura123/provisioner:v1.0.0"
+  enabled: true
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn-provisioner:latest"
+  limits:
+    cpu: "300m"
+    memory: 2Gi
+  requests:
+    cpu: "300m"
+    memory: 1Gi
 
 reporting:
+  enabled: false
   image: "benura123/reporting:v1.0.1"
 
 rhythm:
-  image: "benura123/rhythm:v1.0.2"
+  enabled: false
+  image: "419830066942.dkr.ecr.ap-south-1.amazonaws.com/fineract-cn:rhythm"
 
 teller:
+  enabled: false
   image: "benura123/teller:v1.0.1"

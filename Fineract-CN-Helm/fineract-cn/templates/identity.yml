@@ -1,3 +1,4 @@
+{{- if .Values.identity.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,7 +37,14 @@ spec:
       containers:
       - name: identity-ms
         image: {{ .Values.identity.image }}
-        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "{{ .Values.identity.limits.memory }}"
+            cpu: "{{ .Values.identity.limits.cpu }}"
+          requests:
+            memory: "{{ .Values.identity.requests.memory }}"
+            cpu: "{{ .Values.identity.requests.cpu }}"
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config
@@ -78,3 +86,4 @@ spec:
                 name: secret-config
         ports:
           - containerPort: 2021
+{{- end }}

@@ -40,3 +40,6 @@ data:
   conf.enableAccountLevelAccessVerification: "false"
   fin.keycloak.realm.publicKey: "keycloak-rsa-public-key"
   keycloak.use-resource-role-mappings: "true"
+  spring.profiles.active: "cassandra"
+  spring.autoconfigure.exclude: "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration"
+  authentication.enabled: "false"

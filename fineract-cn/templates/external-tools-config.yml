@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: external-tools-config
+  namespace: {{ .Values.namespace }}
+data:
+  ribbon.listOfServers: eureka-cluster:9090
+  eureka.client.serviceUrl.defaultZone: http://eureka-cluster:8761/eureka
+  postgresql.host: postgresdb-cluster
+  activemq.brokerUrl: tcp://activemq-cluster:61616
+  cassandra.contactPoints: cassandra-cluster:9042

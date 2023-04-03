@@ -1,3 +1,4 @@
+{{- if .Values.postgres.enabled }}
 # apiVersion: v1
 # kind: PersistentVolume
 # metadata:
@@ -25,7 +26,9 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
+    limits:
+      cpu: "500m"
 
 ---
 
@@ -66,7 +69,14 @@ spec:
     spec:
       containers:
         - image: postgres:9.5
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "{{ .Values.postgres.limits.memory }}"
+              cpu: "{{ .Values.postgres.limits.cpu }}"
+            requests:
+              memory: "{{ .Values.postgres.requests.memory }}"
+              cpu: "{{ .Values.postgres.requests.cpu }}"
           name: postgres
           ports:
             - containerPort: 5432
@@ -91,3 +101,4 @@ spec:
         - name: postgresdb-storage
           persistentVolumeClaim:
             claimName: postgresdb-pvc
+{{- end }}

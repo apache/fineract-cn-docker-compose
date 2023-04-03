@@ -1,3 +1,4 @@
+{{- if .Values.deposit.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,7 +37,7 @@ spec:
       containers:
       - name: deposit-ms
         image: {{ .Values.deposit.image }}
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: external-tools-config
@@ -76,3 +77,4 @@ spec:
                 name: secret-config
         ports:
           - containerPort: 2027
+{{- end }}

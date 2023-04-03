@@ -1,0 +1,80 @@
+{{- if .Values.teller.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: teller-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: teller-ms
+  ports:
+    - port: 2028
+      targetPort: 2028
+  # type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teller-ms-cluster
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: teller-ms
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: teller-ms
+    spec:
+      containers:
+      - name: teller-ms
+        image: {{ .Values.teller.image }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: external-tools-config
+          - configMapRef:
+              name: fineract-service-config
+        env:
+          - name: eureka.instance.hostname
+            value: teller-ms
+          - name: server.port
+            value: "2028"
+          - name: spring.application.name
+            value:  teller-v1
+          - name: system.publicKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_MODULUS
+                name: secret-config
+          - name: system.publicKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_EXPONENT
+                name: secret-config
+          - name: system.publicKey.timestamp
+            valueFrom:
+              configMapKeyRef:
+                key: PUBLIC_KEY_TIMESTAMP
+                name: secret-config
+          - name: system.privateKey.modulus
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_MODULUS
+                name: secret-config
+          - name: system.privateKey.exponent
+            valueFrom:
+              configMapKeyRef:
+                key: PRIVATE_KEY_EXPONENT
+                name: secret-config
+        ports:
+          - containerPort: 2028
+{{- end }}
